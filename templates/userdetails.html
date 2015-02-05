@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <title> </title>
+
+  <!-- <link type = "text/css" href="static/css/bootstrap.css" rel="stylesheet" --> 
+  <link type = "text/css" href="static/css/bootswatch.css" rel="stylesheet">
+  <link type = "text/css" href="static/css/styles.css" rel="stylesheet">
+  <script src="static/js/jquery.js"></script>
+  <script src="static/js/bootstrap.min.js"></script>
+	
+</head>
+
+<body style="padding-top: 70px;">
+ <div class="container">
+
+      <div class="row">
+
+       <div class="col-md-8 col-md-offset-2">
+         <h3>Add Employee Details</h3>
+
+         <div class="panel panel-default">
+          <div class="panel-body">
+            <form id="form"  role="form" method="post">
+              <div class="form-group">
+                <label for="userid">EMPLOYEE ID</label>
+                <input type="text" class="form-control" name="name" placeholder="Enter Employee ID" required>
+              </div>
+              <div class="form-group">
+                <label for="name">NAME</label>
+                <input type="text" class="form-control" name="name" placeholder="Enter name" required>
+              </div>
+              <div class="form-group">
+                <label for="gender">GENDER</label>
+            	<select class="form-control" name="gender">
+  					<option value="male">Male</option>
+  					<option value="female">Female</option>
+				</select>
+			  </div>
+			   <div class="form-group">
+                <label for="designation">DESIGNATION</label>
+            	<select class="form-control" name="designation">
+            		<option value="prof">Professor</option>
+  					<option value="assistprof">Assistant Professor</option>
+  					<option value="suptd">Superintendent</option>
+  					<option value="clerk">Clerk</option>
+  					<option value="others">Others</option>
+				</select>
+			  </div>
+			  <div class="form-group">
+                <label for="employeetype">EMPLOYEE TYPE</label>
+            	<select class="form-control" name="emp-type">
+            		<option value="state">State</option>
+  					<option value="aicte">AICTE</option>
+  					<option value="ugc">UGC</option>
+  					<option value="qip">QIP</option>
+				</select>
+			  </div>
+			  <div class="form-group">
+                <label for="basicpay">BASIC PAY</label>
+                <div class="input-group">
+                    <div class="input-group-addon">Rs.</div>
+                    <input class="form-control" type="text" name="bp-rs" placeholder="Rupees" required maxlength="10">
+                    <div class="input-group-addon"> Ps.</div>
+                    <input class="form-control" type="text" name="bp-ps" placeholder="Paise" maxlength="2">
+                  </div>
+              </div>
+			   <div class="form-group">
+                <label for="name">BANK TYPE</label>
+            	<select class="form-control">
+  					<option value="sbi">State Bank of India</option>
+  					<option value="sbt">State Bank of Tranvancore</option>
+  					<option value="ib">Indian Bank</option>
+				</select>
+			  </div>
+			  <div class="form-group">
+                <label for="pan">PAN NUMBER</label>
+                <input type="text" class="form-control" name="pan" placeholder="Enter PAN Number" required>
+              </div>
+              <div class="form-group">
+                <label for="email">EMAIL</label>
+                <input type="email" class="form-control" name="email" placeholder="Enter email" required>
+              </div>
+              <div class="form-group">
+                <label for="mobilenumber">MOBILE NUMBER</label>
+                <div class="input-group">
+                    <div class="input-group-addon">+91</div>
+                    <input class="form-control" type="text" name="mobilenumber"placeholder="Mobile number" required maxlength="10">
+                  </div>
+              </div>
+              <button type="submit" class="btn btn-success" id="submit-button">Register</button>
+              <a id ="cancel-button" class="btn btn-warning" href="{{url_for('index')}}">
+                  Cancel </a>
+            </form>
+          </div>
+        </div>
+      </div>
+
+
+
+
+  </div>
+</div>
+</body>

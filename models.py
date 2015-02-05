@@ -14,7 +14,7 @@ class User(db.Model):
     	designation = db.Column(db.String, nullable=False)
     	Type = db.Colum(db.String, nullable=False)
      	bank_name = db.Column(db.String, nullable=False)
-     	aacno = db.Column(db.String,nullable=False, unique =True)  	
+     	accno = db.Column(db.String,nullable=False, unique =True)  	
     	PAN = db.Column(db.String, nullable=False)  	
     	mobilenumber = db.Column(db.Integer, nullable=False)
      	email = db.Column(db.String, nullable=False, unique = True)
@@ -144,4 +144,4 @@ class Leaves(db.Model):
 	    self.other2 = other2
 	    self.tot_deduct = tot_deduct
 	    self.month = month
-	    self.year = yea    	
+	    self.year = yea	
