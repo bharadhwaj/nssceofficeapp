@@ -115,6 +115,15 @@ def register():
     	    db.session.commit()
 	    return redirect(url_for('index'))
 
+@app.route('/leaves/<empid>',methods=['GET','POST'])
+def leaves():
+	def editemp(empid):
+    if request.method == 'GET':
+        employee = Employee.query.filter_by(empid=empid).first()
+        if employee:
+            return render_template('leaves.html', emp = employee, str=str)
+
+
 
 @app.route('/test/<template>')
 def test(template):
@@ -122,4 +131,4 @@ def test(template):
 
 
 if __name__ == '__main__':
-    app.run(host="0.0.0.0",port=5050)
+    app.run(host="0.0.0.0",port=8080)

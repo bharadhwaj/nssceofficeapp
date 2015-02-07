@@ -47,8 +47,8 @@
           <label class="col-sm-3 control-label" for="gender">GENDER</label>
             <div class="col-sm-9">
             <select class="form-control" name="gender">
-             <option {{'selected' if emp.gender == 'm'}} value="m">Male</option>
-             <option {{'selected' if emp.gender == 'f'}} value="f">Female</option>
+             <option {{'selected' if emp.gender == 'Male'}} value="Male">Male</option>
+             <option {{'selected' if emp.gender == 'Female'}} value="Female">Female</option>
            </select>
          </div>
          </div>
@@ -56,11 +56,11 @@
          <label class="col-sm-3 control-label" for="designation">DESIGNATION</label>
           <div class="col-sm-9">
           <select class="form-control" name="designation">
-            <option {{'selected' if emp.designation == 'prof'}} value="prof">Professor</option>
-            <option {{'selected' if emp.designation == 'assistprof'}} value="assistprof">Assistant Professor</option>
-            <option {{'selected' if emp.designation == 'suptd'}} value="suptd">Superintendent</option>
-            <option {{'selected' if emp.designation == 'clerk'}} value="clerk">Clerk</option>
-            <option {{'selected' if emp.designation == 'others'}} value="others">Others</option>
+            <option {{'selected' if emp.designation == 'Professor'}} value="Professor">Professor</option>
+            <option {{'selected' if emp.designation == 'Assistant Prof.'}} value="Assistant Prof.">Assistant Professor</option>
+            <option {{'selected' if emp.designation == 'Superintendent'}} value="Superintendent">Superintendent</option>
+            <option {{'selected' if emp.designation == 'Clerk'}} value="Clerk">Clerk</option>
+            <option {{'selected' if emp.designation == 'Others'}} value="Others">Others</option>
           </select>
         </div>
         </div>
@@ -68,13 +68,13 @@
         <label class="col-sm-3 control-label" for="department">DEPARTMENT</label>
         <div class="col-sm-9">
           <select class="form-control" name="department">
-           <option {{'selected' if emp.department == 'ce'}} value="ce">Department of Civil Engineering.</option>
-           <option {{'selected' if emp.department == 'cse'}} value="cse">Department of Computer Science & Engineering.</option>
-           <option {{'selected' if emp.department == 'ece'}} value="ece">Department of Electronic & Communication Engineering.</option>
-           <option {{'selected' if emp.department == 'eee'}}value="eee">Department of Electrical & Electrical Engineering.</option>
-           <option {{'selected' if emp.department == 'ic'}}value="ic">Department of Instrumentation & Control Engineering.</option>
-           <option {{'selected' if emp.department == 'me'}}value="me">Department of Mechanical Engineering.</option>
-           <option {{'selected' if emp.department == 'office'}}value="office">Office.</option>
+           <option {{'selected' if emp.department == 'CE'}} value="CE">Department of Civil Engineering.</option>
+           <option {{'selected' if emp.department == 'CSE'}} value="CSE">Department of Computer Science & Engineering.</option>
+           <option {{'selected' if emp.department == 'ECE'}} value="ECE">Department of Electronic & Communication Engineering.</option>
+           <option {{'selected' if emp.department == 'EEE'}}value="EEE">Department of Electrical & Electrical Engineering.</option>
+           <option {{'selected' if emp.department == 'IC'}}value="IC">Department of Instrumentation & Control Engineering.</option>
+           <option {{'selected' if emp.department == 'ME'}}value="ME">Department of Mechanical Engineering.</option>
+           <option {{'selected' if emp.department == 'Office'}}value="Office">Office.</option>
          </select>
        </div>
        </div>
@@ -82,10 +82,10 @@
        <label class="col-sm-3 control-label" for="employeetype">EMPLOYEE TYPE</label>
        <div class="col-sm-9">
         <select class="form-control" name="emp-type">
-          <option {{'selected' if emp.scheme == 'state'}} value="state">State</option>
-          <option {{'selected' if emp.scheme == 'aicte'}} value="aicte">AICTE</option>
-          <option {{'selected' if emp.scheme == 'ugc'}} value="ugc">UGC</option>
-          <option {{'selected' if emp.scheme == 'qip'}} value="qip">QIP</option>
+          <option {{'selected' if emp.scheme == 'State'}} value="State">State</option>
+          <option {{'selected' if emp.scheme == 'AICTE'}} value="AICTE">AICTE</option>
+          <option {{'selected' if emp.scheme == 'UGC'}} value="UGC">UGC</option>
+          <option {{'selected' if emp.scheme == 'QIP'}} value="QIP">QIP</option>
         </select>
       </div>
       </div>
@@ -104,9 +104,9 @@
       <label class="col-sm-3 control-label" for="banktype">BANK TYPE</label>
       <div class="col-sm-9">
         <select class="form-control" name = "bank">
-         <option {{'selected' if emp.scheme == 'sbi'}} value="sbi">State Bank of India</option>
-         <option {{'selected' if emp.scheme == 'sbt'}} value="sbt">State Bank of Tranvancore</option>
-         <option {{'selected' if emp.scheme == 'ib'}} value="ib">Indian Bank</option>
+         <option {{'selected' if emp.scheme == 'SBI'}} value="SBI">State Bank of India</option>
+         <option {{'selected' if emp.scheme == 'SBT'}} value="SBT">State Bank of Tranvancore</option>
+         <option {{'selected' if emp.scheme == 'Indian Bank'}} value="Indian Bank">Indian Bank</option>
        </select>
      </div>
      </div>
