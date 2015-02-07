@@ -5,9 +5,11 @@ from werkzeug import generate_password_hash, check_password_hash
 from flask.ext.seasurf import SeaSurf #for csrf protection
 from flask_mail import Mail, Message
 from flask import copy_current_request_context #for async mail
+from flask import jsonify
 from threading import Thread
 import os
 import pytz
+import json
 
 from models import Employee
 from models import db
@@ -115,14 +117,20 @@ def register():
     	    db.session.commit()
 	    return redirect(url_for('index'))
 
-@app.route('/leaves/<empid>',methods=['GET','POST'])
-def leaves():
-	def editemp(empid):
-    if request.method == 'GET':
-        employee = Employee.query.filter_by(empid=empid).first()
-        if employee:
-            return render_template('leaves.html', emp = employee, str=str)
 
+@app.route('/generate',methods=['GET','POST'])
+def generate():
+    employees = Employee.query.all()
+    empjson = []
+    for i in employees:
+        app.logger.info(i.__dict__)
+        d = dict(i.__dict__)
+        d.pop('_sa_instance_state')
+        empjson.append(d)
+        empjson = json.dumps(empjson)
+
+    app.logger.info(empjson)   
+    return render_template('generate.html', empjson=empjson)
 
 
 @app.route('/test/<template>')
@@ -131,4 +139,4 @@ def test(template):
 
 
 if __name__ == '__main__':
-    app.run(host="0.0.0.0",port=8080)
+    app.run(host="0.0.0.0",port=5050)
