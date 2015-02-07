@@ -21,9 +21,9 @@ app.config.from_object('config')
 db.init_app(app)
 csrf = SeaSurf(app)
 
-login_manager = LoginManager()
-login_manager.init_app(app)
-login_manager.login_view = 'login'
+# login_manager = LoginManager()
+# login_manager.init_app(app)
+# login_manager.login_view = 'login'
 
 @app.route('/')
 def index():
@@ -127,7 +127,8 @@ def generate():
         d = dict(i.__dict__)
         d.pop('_sa_instance_state')
         empjson.append(d)
-        empjson = json.dumps(empjson)
+        
+    empjson = json.dumps(empjson)
 
     app.logger.info(empjson)   
     return render_template('generate.html', empjson=empjson)
