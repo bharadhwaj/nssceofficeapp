@@ -28,3 +28,23 @@ html, body {
 .posttext,.comment{
 	white-space: pre-wrap;
 }
+
+@media (min-width: 768px){
+  #left {
+    position: absolute;
+    top: 70px;
+    bottom: 0;
+    left: 0;
+    /*width: 75%;*/
+    overflow-y: scroll; 
+  }
+  
+  #right {
+    position: absolute;
+    top: 70px;
+    bottom: 0;
+    right: 0;
+    overflow-y: scroll;
+/*    width: 25%;*/
+  }
+}

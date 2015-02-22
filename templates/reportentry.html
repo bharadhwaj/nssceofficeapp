@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <title>Prepare New Report</title>
+
+  <!-- <link type = "text/css" href="static/css/bootstrap.css" rel="stylesheet" --> 
+  <link href="{{ url_for('static', filename='css/bootswatch.css')}}" rel="stylesheet">
+  <link type = "text/css" href="static/css/styles.css" rel="stylesheet">
+
+
+</head>
+
+<body style="padding-top: 70px;">
+  {% include 'navbar.html' %}
+  <div class="container">
+
+  <div class="row">
+     <div class="col-sm-4" id="left">
+     <h3>Employees</h3>
+      <ul class="list-group">
+      <li class="list-group-item">123</li>
+      <li class="list-group-item" data-empid="1">465</li>
+      <li class="list-group-item" data-empid="2">123</li>
+      <li class="list-group-item">465</li>
+      <li class="list-group-item">123</li>
+      <li class="list-group-item">465</li>
+      <li class="list-group-item">123</li>
+      <li class="list-group-item">465</li>
+      <li class="list-group-item">123</li>
+      <li class="list-group-item">465</li>
+      <li class="list-group-item">123</li>
+      <li class="list-group-item">465</li>
+      <li class="list-group-item">123</li>
+      <li class="list-group-item">465</li>
+      <li class="list-group-item">123</li>
+      <li class="list-group-item">465</li>
+      <li class="list-group-item">123</li>
+      <li class="list-group-item">465</li>
+      <li class="list-group-item">123</li>
+      <li class="list-group-item">465</li>
+      <li class="list-group-item">123</li>
+      <li class="list-group-item">465</li>
+      <li class="list-group-item">123</li>
+      <li class="list-group-item">465</li>
+      <li class="list-group-item">123</li>
+      <li class="list-group-item">465</li>
+      <li class="list-group-item">123</li>
+      <li class="list-group-item">465</li>
+      <li class="list-group-item">123</li>
+      <li class="list-group-item">465</li>
+      </ul>
+  </div>   
+
+  <div class="col-sm-8" id="right">
+
+
+     
+  </div>
+
+  </div>
+
+  </div>
+  <script src="{{ url_for('static', filename='js/jquery.js')}}"></script>
+  <script>
+
+  $(document).ready(function(){
+    $('li.list-group-item').on('click', function(){
+      var empid = $(this).data('empid');
+      $('#right').load('/reportform/'  + empid)
+      alert('Clicked on empid - ' + empid);
+
+    });
+  })
+  </script>
+
+</body>
+</html>

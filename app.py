@@ -11,7 +11,7 @@ import os
 import pytz
 import json
 
-from models import Employee
+from models import Employee, User, SalaryPeriod, SalarySlip
 from models import db
 
 app = Flask(__name__)
@@ -21,16 +21,60 @@ app.config.from_object('config')
 db.init_app(app)
 csrf = SeaSurf(app)
 
-# login_manager = LoginManager()
-# login_manager.init_app(app)
-# login_manager.login_view = 'login'
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'login'
+
+@login_manager.user_loader
+def load_user(id):
+    return User.query.get(int(id))
+
+
+@app.before_request
+def before_request():
+    g.user = current_user
+
 
 @app.route('/')
+@login_required
 def index():
     employees = Employee.query.all()
     return render_template('employees.html', employees = employees)
 
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'GET':
+        if g.user is not None and g.user.is_authenticated():
+            return redirect(url_for('index'))
+        return render_template('login.html',page="login")
+
+    elif request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        user = User.query.filter_by(username=username).first()
+        if user:
+            if check_password_hash(user.pwdhash, password):
+                user.authenticated = True
+                db.session.commit()
+                login_user(user)
+                return redirect(url_for('index'))
+
+        flash('Username or Password is invalid' , 'warning')
+        return render_template("login.html",page="login")
+
+
+@app.route('/logout')
+@login_required
+def logout():
+    g.user.authenticated = False
+    db.session.commit()
+    logout_user()
+    return redirect(url_for('index'))
+
+
 @app.route('/employee/<empid>',methods=['GET','POST'])
+@login_required
 def editemp(empid):
     if request.method == 'GET':
         employee = Employee.query.filter_by(empid=empid).first()
@@ -74,6 +118,7 @@ def editemp(empid):
         return render_template('editemp.html', emp = user, str=str)
 
 @app.route('/register',methods=['GET','POST'])
+@login_required
 def register():
  
     if request.method == 'GET':
@@ -117,8 +162,52 @@ def register():
     	    db.session.commit()
 	    return redirect(url_for('index'))
 
+@app.route('/newreport', methods=['GET','POST'])
+@login_required
+def newreport():
+    if request.method == 'GET':
+        if SalaryPeriod.query.filter_by(completed=False).first():
+            return redirect(url_for('reportentry'))
+        else:
+            return render_template('newperiod.html')
+
+    if request.method == 'POST':
+        app.logger.info(repr(request.form))
+        year = int(request.form['year'])
+        month = int(request.form['month'])
+
+        hra = float(request.form['hra'])
+
+        da_qip = float(request.form['qip'])
+        da_state = float(request.form['state'])
+        da_ugc = float(request.form['ugc'])
+        da_aicte = float(request.form['aicte'])
+
+        newperiod = SalaryPeriod(year, month, hra, da_qip, da_state, da_ugc, da_aicte, g.user.id)
+        db.session.add(newperiod)
+        db.session.commit()
+
+        return redirect(url_for('reportentry'))
+
+@app.route('/reportentry')
+@login_required
+def reportentry():
+    return render_template('reportentry.html')
+
+@app.route('/reportform/<empid>')
+@login_required
+def reportform(empid):
+    employee = Employee.query.get(int(empid))
+    if employee:
+        return render_template('reportform.html', employee = employee)
+    else:
+        return 'No such employee'
+
+
+
 
 @app.route('/generate',methods=['GET','POST'])
+@login_required
 def generate():
     employees = Employee.query.all()
     empjson = []
@@ -140,4 +229,4 @@ def test(template):
 
 
 if __name__ == '__main__':
-    app.run(host="0.0.0.0",port=5050)
+    app.run(host="0.0.0.0",port=5000)

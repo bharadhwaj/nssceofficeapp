@@ -7,10 +7,10 @@
   <meta name="description" content="">
   <meta name="author" content="">
 
-  <title> </title>
+  <title>EMPLOYEES </title>
 
   <!-- <link type = "text/css" href="static/css/bootstrap.css" rel="stylesheet" --> 
-  <link href="{{ url_for('static', filename='css/bootstrap.css')}}" rel="stylesheet">
+  <link href="{{ url_for('static', filename='css/bootswatch.css')}}" rel="stylesheet">
   <link href="{{ url_for('static', filename='css/jquery.dataTables.css')}}" rel="stylesheet">
   <link type = "text/css" href="static/css/styles.css" rel="stylesheet">
 
@@ -18,11 +18,13 @@
 </head>
 
 <body style="padding-top: 70px;">
+{% include 'navbar.html' %}
  <div class="container">
 
   <div class="row">
 <div class="col-md-10 col-md-offset-1">
     <h3>Employees</h3>
+    <h4><a href="{{url_for('register')}}">Add new employee</a></h4>
     <table id="empTable" class="table table-hover">
     <thead>
                 <tr>
@@ -51,10 +53,6 @@
                 </tr>
                 {% endfor %}
   </table>
-
-   
-     
-
 
    </div>
  </div>
