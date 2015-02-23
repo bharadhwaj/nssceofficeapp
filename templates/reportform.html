@@ -5,7 +5,7 @@
 		<div class="form-group">
           <label class="col-sm-3 control-label" for="userid">EMPLOYEE ID</label>
             <div class="col-sm-9">
-              <p class="form-control-static">{{employee.id}}</p>
+              <p class="form-control-static">{{employee.empid}}</p>
             </div>
           </div>
 
@@ -23,7 +23,102 @@
             </div>
           </div>
 
-        
+          <div class="form-group">
+          <label class="col-sm-3 control-label" for="userid">BASIC PAY</label>
+            <div class="col-sm-9">
+              <input type="number" class="form-control" name="basic_pay" required value="{{slip.basic_pay if hasslip else employee.basic_pay}}">
+            </div>
+          </div>
+
+          <div class="form-group">
+          <label class="col-sm-3 control-label" for="userid">AGP</label>
+            <div class="col-sm-9">
+              <input type="number" class="form-control" name="agp" value="{{slip.agp if hasslip else '0'}}" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+          <label class="col-sm-3 control-label" for="userid">DA</label>
+            <div class="col-sm-9">
+              <input type="number" class="form-control" name="da" value="{{slip.da if hasslip else daval}}" required>
+            </div>
+          </div>
+
+
+          <div class="form-group">
+          <label class="col-sm-3 control-label" for="userid">HRA</label>
+            <div class="col-sm-9">
+              <input type="number" class="form-control" name="hra" value="{{slip.hra if hasslip else  hraval}}" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+          <label class="col-sm-3 control-label" for="userid">OTHER</label>
+            <div class="col-sm-9">
+              <input type="number" class="form-control" name="other" value="{{slip.other if hasslip  else '0'}}" required>
+            </div>
+          </div>
+
+          <legend>CUTTINGS:</legend>
+          <div class="form-group">
+          <label class="col-sm-3 control-label" for="userid">PF</label>
+            <div class="col-sm-9">
+              <input type="number" class="form-control" name="pf" value="{{slip.pf if hasslip else '0'}}" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+          <label class="col-sm-3 control-label" for="userid">PF-LOAN</label>
+            <div class="col-sm-9">
+              <input type="number" class="form-control" name="pfloan" value="{{slip.pf_loan if hasslip  else '0'}}" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+          <label class="col-sm-3 control-label" for="userid">SLI</label>
+            <div class="col-sm-9">
+              <input type="number" class="form-control" name="sli" value="{{slip.sli if hasslip  else '0'}}" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+          <label class="col-sm-3 control-label" for="userid">FBS</label>
+            <div class="col-sm-9">
+              <input type="number" class="form-control" name="fbs" value="{{slip.fbs if hasslip  else '0'}}" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+          <label class="col-sm-3 control-label" for="userid">GIS</label>
+            <div class="col-sm-9">
+              <input type="number" class="form-control" name="gis" value="{{slip.gis if hasslip  else '0'}}" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+          <label class="col-sm-3 control-label" for="userid">INCOME-TAX</label>
+            <div class="col-sm-9">
+              <input type="number" class="form-control" name="it" value="{{slip.income_tax if hasslip  else '0'}}" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+          <label class="col-sm-3 control-label" for="userid">GPIS</label>
+            <div class="col-sm-9">
+              <input type="number" class="form-control" name="gpis" value="{{slip.gpis if hasslip  else '0'}}" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+          <label class="col-sm-3 control-label" for="userid">OTHER</label>
+            <div class="col-sm-9">
+              <input type="number" class="form-control" name="other2" value="{{slip.other2 if hasslip  else '0'}}" required>
+            </div>
+          </div>
+        <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+        <input type="hidden" name="empid" value="{{ employee.id }}">
+        <input type="hidden" name="hasslip" value="{{ hasslip }}">
+        <button type="submit" class="btn btn-success" id="submit-button">Update</button>
 
 		</form>
 	</div>

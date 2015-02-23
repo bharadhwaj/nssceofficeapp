@@ -127,7 +127,33 @@ class SalarySlip(db.Model):
     gis = db.Column(db.Float)
     income_tax = db.Column(db.Float)
     gpis = db.Column(db.Float)
-    other = db.Column(db.Float)
+    other2 = db.Column(db.Float)
     total_deductions = db.Column(db.Float)
 
     net_salary = db.Column(db.Float)
+
+    def __init__(self, period, emp, basic_pay, agp, da, hra, other, pf, pf_loan, sli, fbs,
+        gis, income_tax, gpis, other2):
+        self.period_id = period
+        self.employee_id = emp
+        self.basic_pay = basic_pay
+        self.agp = agp
+        self.da = da
+        self.hra = hra
+        self.other = other
+
+        self.gross = self.basic_pay + self.agp + self.da + self.hra + self.other
+
+        self.pf = pf
+        self.pf_loan = pf_loan
+        self.sli = sli
+        self.fbs = fbs
+        self.gis = gis
+        self.income_tax = income_tax
+        self.gpis = gpis
+        self.other2 = other2
+
+        self.total_deductions = self.pf + self.pf_loan + self.sli + self.fbs + self.gis +          self.income_tax + self.gpis + self.other2
+
+        self.net_salary = self.gross - self.total_deductions
+

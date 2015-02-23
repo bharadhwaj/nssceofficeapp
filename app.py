@@ -189,20 +189,78 @@ def newreport():
 
         return redirect(url_for('reportentry'))
 
-@app.route('/reportentry')
+@app.route('/reportentry', methods=['GET','POST'])
 @login_required
 def reportentry():
-    return render_template('reportentry.html')
+    employees = Employee.query.all()
+    period = SalaryPeriod.query.filter_by(completed=False).first()
+    updatedemps = [emp.id for emp in SalarySlip.query.filter_by(period_id = period.id).all()]
+    app.logger.info('period %r, updatedemps %r' %(period, updatedemps))
+    progress = (float(len(updatedemps)) / len(employees) )* 100
 
-@app.route('/reportform/<empid>')
+    if request.method == 'POST':
+        empid = request.form['empid']
+        employee = Employee.query.get(int(empid))
+        basic_pay = float(request.form['basic_pay'])
+        agp = float(request.form['agp'])
+        da = float(request.form['da'])
+        hra = float(request.form['hra'])
+        other = float(request.form['other'])
+        pf = float(request.form['pf'])
+        pfloan = float(request.form['pfloan'])
+        sli = float(request.form['sli'])
+        fbs = float(request.form['fbs'])
+        gis = float(request.form['gis'])
+        it = float(request.form['it'])
+        gpis = float(request.form['gpis'])
+        other2 = float(request.form['other2'])
+
+        if request.form['hasslip'] == 'True':
+            slip = SalarySlip.query.filter_by(employee_id = int(empid), period_id = period.id).first()
+            db.session.delete(slip)
+            db.session.commit()
+
+        empslip = SalarySlip(period.id, employee.id, basic_pay, agp, da, hra, other, 
+            pf, pfloan, sli, fbs, gis, it, gpis, other2)
+
+        db.session.add(empslip)
+        db.session.commit()
+
+    return render_template('reportentry.html', employees = employees, updatedemps=updatedemps, progress=progress)
+
+@app.route('/reportform/<empid>', methods=['GET','POST'])
 @login_required
 def reportform(empid):
-    employee = Employee.query.get(int(empid))
-    if employee:
-        return render_template('reportform.html', employee = employee)
-    else:
-        return 'No such employee'
+    if request.method == 'GET':   
+        employee = Employee.query.get(int(empid))
+        if employee:
+            hasslip = False
+            period = SalaryPeriod.query.filter_by(completed=False).first()
+            slip = SalarySlip.query.filter_by(period_id = period.id, employee_id = employee.id).first()
+            if slip:
+                hasslip = True
+                app.logger.info('gotslip %r', slip.id)
+            hraval = period.hra
+            if employee.scheme == 'State':
+                daval = employee.basic_pay *period.da_state / 100.
+            elif  employee.scheme == 'AICTE':
+                daval = employee.basic_pay *period.da_aicte / 100.
+            elif employee.scheme == 'QIP':
+                daval = employee.basic_pay *period.da_qip / 100.
+            elif employee.scheme == 'UGC':
+                daval = employee.basic_pay *period.da_ugc / 100.
 
+
+            return render_template('reportform.html', employee = employee, hraval=hraval, daval=daval, slip=slip, hasslip= hasslip)
+        else:
+            return 'No such employee'
+
+
+@app.route('/monthreport')
+def monthreport():
+    period = SalaryPeriod.query.filter_by(completed=False).first()
+    slips = SalarySlip.query.filter_by(period_id = period.id).all()
+    return render_template('monthreport.html', slips = slips, period=period)
 
 
 
