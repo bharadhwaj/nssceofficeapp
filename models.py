@@ -85,6 +85,7 @@ class SalaryPeriod(db.Model):
     hra = db.Column(db.Float)
     started_on = db.Column(db.DateTime)
     started_by = db.Column(db.Integer, db.ForeignKey('user.id'))
+    salaryslips = db.relationship('SalarySlip', backref='period', lazy='dynamic')
 
 
     def __repr__(self):
@@ -156,4 +157,7 @@ class SalarySlip(db.Model):
         self.total_deductions = self.pf + self.pf_loan + self.sli + self.fbs + self.gis +          self.income_tax + self.gpis + self.other2
 
         self.net_salary = self.gross - self.total_deductions
+
+    def __repr__(self):
+        return '<emp-%d period-%d(%d/%d)>'%(self.employee_id, self.period_id, self.period.month, self.period.year)
 

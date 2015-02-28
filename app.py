@@ -192,12 +192,7 @@ def newreport():
 @app.route('/reportentry', methods=['GET','POST'])
 @login_required
 def reportentry():
-    employees = Employee.query.all()
     period = SalaryPeriod.query.filter_by(completed=False).first()
-    updatedemps = [emp.id for emp in SalarySlip.query.filter_by(period_id = period.id).all()]
-    app.logger.info('period %r, updatedemps %r' %(period, updatedemps))
-    progress = (float(len(updatedemps)) / len(employees) )* 100
-
     if request.method == 'POST':
         empid = request.form['empid']
         employee = Employee.query.get(int(empid))
@@ -217,15 +212,34 @@ def reportentry():
 
         if request.form['hasslip'] == 'True':
             slip = SalarySlip.query.filter_by(employee_id = int(empid), period_id = period.id).first()
-            db.session.delete(slip)
+            app.logger.info('Found existing slip: %r'%slip)
+            slip.basic_pay = basic_pay
+            slip.agp = agp
+            slip.da = da
+            slip.hra = hra
+            slip.other = other
+            slip.pf = pf
+            slip.pfloan = pfloan
+            slip.sli = sli
+            slip.fbs = fbs
+            slip.gis = gis
+            slip.gpis = gpis
+            slip.other2 = other2
+
+            db.session.add(slip)
             db.session.commit()
 
-        empslip = SalarySlip(period.id, employee.id, basic_pay, agp, da, hra, other, 
+        else:
+            empslip = SalarySlip(period.id, employee.id, basic_pay, agp, da, hra, other, 
             pf, pfloan, sli, fbs, gis, it, gpis, other2)
 
-        db.session.add(empslip)
-        db.session.commit()
+            db.session.add(empslip)
+            db.session.commit()
 
+    employees = Employee.query.all()
+    updatedemps = [emp.id for emp in SalarySlip.query.filter_by(period_id = period.id).all()]
+    progress = (float(len(updatedemps)) / len(employees) )* 100
+    app.logger.info('period %r, updatedemps %r' %(period, updatedemps))
     return render_template('reportentry.html', employees = employees, updatedemps=updatedemps, progress=progress)
 
 @app.route('/reportform/<empid>', methods=['GET','POST'])
