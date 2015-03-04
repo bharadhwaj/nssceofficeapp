@@ -38,9 +38,21 @@ def before_request():
 @app.route('/')
 @login_required
 def index():
+    return render_template('index.html')
+    
+@app.route('/employees')
+@login_required
+def employees():    
     employees = Employee.query.all()
     return render_template('employees.html', employees = employees)
 
+#@app.route('/', methods=['GET','POST'])
+#@login_required
+#def employeeedit():
+#	if request.method == 'POST':
+#		empid = request.form['empid']
+#		employee = Employee.query.filter_by(empid=empid).first()
+#		return render_template('editemp.html', emp = employee, str=str)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
