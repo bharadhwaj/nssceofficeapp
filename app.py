@@ -252,7 +252,7 @@ def reportentry():
             db.session.commit()
 
     employees = Employee.query.all()
-    updatedemps = [emp.id for emp in SalarySlip.query.filter_by(period_id = period.id).all()]
+    updatedemps = [slip.employee.id for slip in SalarySlip.query.filter_by(period_id = period.id).all()]
     progress = (float(len(updatedemps)) / len(employees) )* 100
 
     app.logger.info('period %r, updatedemps %r' %(period, updatedemps))
