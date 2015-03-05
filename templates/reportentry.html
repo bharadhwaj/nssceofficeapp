@@ -32,7 +32,7 @@
 </div>
 <p>Recorded {{updatedemps|length }}/{{employees|length}}</p>  
 {% if progress == 100 %}
-<a  class="btn btn-primary" href="{{url_for('monthreport')}}">
+<a  class="btn btn-primary" href="{{url_for('verifyentries')}}">
       Generate Report </a>
     {% endif %}
       <!-- <div class="list-group">
@@ -55,7 +55,7 @@
     </thead>
     <tbody>
                  {% for emp in employees %}
-                <a><tr data-empid="{{emp.id}}" class="{{'success' if emp.id in updatedemps }}">                
+                <a><tr data-empid="{{emp.id}}" class="{{'info' if emp.id in updatedemps }}">                
                 <td>{{emp.empid}}</td>
                 <td>{{emp.name}}</td>
                 <td>{{emp.department}}</td>

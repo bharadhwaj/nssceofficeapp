@@ -35,10 +35,13 @@ def before_request():
     g.user = current_user
 
 
-@app.route('/')
+@app.route('/',methods=['GET','POST'])
 @login_required
 def index():
-    return render_template('index.html')
+	if request.method == 'POST':
+		empid = request.form['empid']
+		return redirect(url_for('editemp',empid=empid))
+	return render_template('index.html')
     
 @app.route('/employees')
 @login_required
@@ -46,13 +49,6 @@ def employees():
     employees = Employee.query.all()
     return render_template('employees.html', employees = employees)
 
-#@app.route('/', methods=['GET','POST'])
-#@login_required
-#def employeeedit():
-#	if request.method == 'POST':
-#		empid = request.form['empid']
-#		employee = Employee.query.filter_by(empid=empid).first()
-#		return render_template('editemp.html', emp = employee, str=str)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -92,6 +88,9 @@ def editemp(empid):
         employee = Employee.query.filter_by(empid=empid).first()
         if employee:
             return render_template('editemp.html', emp = employee, str=str)
+        else:
+        	flash('Employee ID is invalid' , 'warning')
+        	return redirect(url_for('index'))
 
     elif request.method == 'POST':
         app.logger.info(repr(request.form))
@@ -178,7 +177,7 @@ def register():
 @login_required
 def newreport():
     if request.method == 'GET':
-        if SalaryPeriod.query.filter_by(completed=False).first():
+        if SalaryPeriod.query.filter_by(spark_completed=False).first():
             return redirect(url_for('reportentry'))
         else:
             return render_template('newperiod.html')
@@ -204,7 +203,7 @@ def newreport():
 @app.route('/reportentry', methods=['GET','POST'])
 @login_required
 def reportentry():
-    period = SalaryPeriod.query.filter_by(completed=False).first()
+    period = SalaryPeriod.query.filter_by(spark_completed=False).first()
     if request.method == 'POST':
         empid = request.form['empid']
         employee = Employee.query.get(int(empid))
@@ -213,6 +212,8 @@ def reportentry():
         da = float(request.form['da'])
         hra = float(request.form['hra'])
         other = float(request.form['other'])
+        lwa = int(request.form['lwa'])
+        halfpay = int(request.form['halfpay'])
         pf = float(request.form['pf'])
         pfloan = float(request.form['pfloan'])
         sli = float(request.form['sli'])
@@ -230,6 +231,8 @@ def reportentry():
             slip.da = da
             slip.hra = hra
             slip.other = other
+            slip.lwa = lwa
+            slip.halfpay = halfpay
             slip.pf = pf
             slip.pfloan = pfloan
             slip.sli = sli
@@ -242,7 +245,7 @@ def reportentry():
             db.session.commit()
 
         else:
-            empslip = SalarySlip(period.id, employee.id, basic_pay, agp, da, hra, other, 
+            empslip = SalarySlip(period.id, employee.id, basic_pay, agp, da, hra, other, lwa, halfpay, 
             pf, pfloan, sli, fbs, gis, it, gpis, other2)
 
             db.session.add(empslip)
@@ -251,6 +254,7 @@ def reportentry():
     employees = Employee.query.all()
     updatedemps = [emp.id for emp in SalarySlip.query.filter_by(period_id = period.id).all()]
     progress = (float(len(updatedemps)) / len(employees) )* 100
+
     app.logger.info('period %r, updatedemps %r' %(period, updatedemps))
     return render_template('reportentry.html', employees = employees, updatedemps=updatedemps, progress=progress)
 
@@ -261,7 +265,7 @@ def reportform(empid):
         employee = Employee.query.get(int(empid))
         if employee:
             hasslip = False
-            period = SalaryPeriod.query.filter_by(completed=False).first()
+            period = SalaryPeriod.query.filter_by(spark_completed=False).first()
             slip = SalarySlip.query.filter_by(period_id = period.id, employee_id = employee.id).first()
             if slip:
                 hasslip = True
@@ -282,11 +286,44 @@ def reportform(empid):
             return 'No such employee'
 
 
-@app.route('/monthreport')
-def monthreport():
-    period = SalaryPeriod.query.filter_by(completed=False).first()
+@app.route('/verifyentries', methods=['GET', 'POST'])
+def verifyentries():
+    daysinmonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+    period = SalaryPeriod.query.filter_by(spark_completed=False).first()
     slips = SalarySlip.query.filter_by(period_id = period.id).all()
-    return render_template('monthreport.html', slips = slips, period=period)
+    if request.method == 'POST':
+        verified = request.form['verified']
+        if verified:
+            for slip in slips:
+                original_basic_pay = slip.basic_pay
+                app.logger.info(daysinmonth[period.month - 1])
+                basicperday = float(slip.basic_pay) / daysinmonth[period.month - 1]
+                daperday = float(slip.basic_pay) / daysinmonth[period.month - 1]
+                agpperday = float(slip.basic_pay) / daysinmonth[period.month - 1]
+                hraperday = float(slip.basic_pay) / daysinmonth[period.month - 1]
+              
+                slip.basic_pay -= slip.lwa * basicperday
+                slip.agp -= slip.lwa * agpperday
+                slip.da -= slip.lwa * daperday
+                slip.hra -= slip.lwa * hraperday
+
+                #Halfpay
+
+                slip.basic_pay -= slip.halfpay * basicperday / 2
+                if original_basic_pay > 18739:
+                    slip.agp -= slip.halfpay * agpperday / 2
+                    slip.da -= slip.halfpay * daperday / 2
+                    slip.hra -= slip.halfpay * hraperday / 2
+
+                slip.gross = slip.basic_pay + slip.agp + slip.da + slip.hra + slip.other
+                slip.total_deductions = slip.pf + slip.pf_loan + slip.sli + slip.fbs + slip.gis + slip.income_tax + slip.gpis + slip.other2
+                slip.net_salary = slip.gross - slip.total_deductions
+
+                db.session.add(slip)
+            db.session.commit()
+
+
+    return render_template('verifyentries.html', slips = slips, period=period)
 
 
 

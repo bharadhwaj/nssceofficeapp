@@ -77,7 +77,8 @@ class SalaryPeriod(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     year = db.Column(db.Integer, nullable=False)
     month = db.Column(db.Integer, nullable=False)
-    completed = db.Column(db.Boolean, default = False)
+    spark_completed = db.Column(db.Boolean, default = False)
+    disburse_completed = db.Column(db.Boolean, default = False)
     da_qip = db.Column(db.Float)
     da_state = db.Column(db.Float)
     da_ugc = db.Column(db.Float)
@@ -111,8 +112,8 @@ class SalarySlip(db.Model):
     employee_id = db.Column(db.Integer, db.ForeignKey('employee.id'))
 
     basic_pay = db.Column(db.Float)
-    full_leave = db.Column(db.Integer)
-    half_leave = db.Column(db.Integer)
+    lwa = db.Column(db.Integer)
+    halfpay = db.Column(db.Integer)
     agp = db.Column(db.Float)
     da = db.Column(db.Float)
     hra = db.Column(db.Float)
@@ -133,7 +134,7 @@ class SalarySlip(db.Model):
 
     net_salary = db.Column(db.Float)
 
-    def __init__(self, period, emp, basic_pay, agp, da, hra, other, pf, pf_loan, sli, fbs,
+    def __init__(self, period, emp, basic_pay, agp, da, hra, other,lwa, halfpay, pf, pf_loan, sli, fbs,
         gis, income_tax, gpis, other2):
         self.period_id = period
         self.employee_id = emp
@@ -142,8 +143,10 @@ class SalarySlip(db.Model):
         self.da = da
         self.hra = hra
         self.other = other
+        self.lwa = lwa
+        self.halfpay = halfpay
 
-        self.gross = self.basic_pay + self.agp + self.da + self.hra + self.other
+        #self.gross = self.basic_pay + self.agp + self.da + self.hra + self.other
 
         self.pf = pf
         self.pf_loan = pf_loan
@@ -154,9 +157,9 @@ class SalarySlip(db.Model):
         self.gpis = gpis
         self.other2 = other2
 
-        self.total_deductions = self.pf + self.pf_loan + self.sli + self.fbs + self.gis +          self.income_tax + self.gpis + self.other2
+        # self.total_deductions = self.pf + self.pf_loan + self.sli + self.fbs + self.gis + self.income_tax + self.gpis + self.other2
 
-        self.net_salary = self.gross - self.total_deductions
+        # self.net_salary = self.gross - self.total_deductions
 
     def __repr__(self):
         return '<emp-%d period-%d(%d/%d)>'%(self.employee_id, self.period_id, self.period.month, self.period.year)
