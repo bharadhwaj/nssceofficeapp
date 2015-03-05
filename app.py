@@ -298,9 +298,9 @@ def verifyentries():
                 original_basic_pay = slip.basic_pay
                 app.logger.info(daysinmonth[period.month - 1])
                 basicperday = float(slip.basic_pay) / daysinmonth[period.month - 1]
-                daperday = float(slip.basic_pay) / daysinmonth[period.month - 1]
-                agpperday = float(slip.basic_pay) / daysinmonth[period.month - 1]
-                hraperday = float(slip.basic_pay) / daysinmonth[period.month - 1]
+                daperday = float(slip.da) / daysinmonth[period.month - 1]
+                agpperday = float(slip.agp) / daysinmonth[period.month - 1]
+                hraperday = float(slip.hra) / daysinmonth[period.month - 1]
               
                 slip.basic_pay -= slip.lwa * basicperday
                 slip.agp -= slip.lwa * agpperday
