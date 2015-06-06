@@ -86,7 +86,7 @@
     $('#empTable').DataTable({paging:false});
     $('td').on('click', function(){
       var empid = $(this).closest('tr').data('empid');
-      $('#right').load('/reportform/'  + empid)
+      $('#right').load('/disbursementform/'  + empid)
       // alert('Clicked on empid - ' + empid);
 
     });

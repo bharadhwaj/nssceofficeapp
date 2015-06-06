@@ -52,6 +52,7 @@ class Employee(db.Model):
     pan_no = db.Column(db.String, unique = True)
     basic_pay = db.Column(db.Float)
     salaryslips = db.relationship('SalarySlip', backref='employee', lazy='dynamic')
+    disbursements = db.relationship('Disbursement', backref='employee', lazy='dynamic')
 
 
     def __init__(self,empid, name, gender, designation, department, scheme, bank_name, accno, pan_no, mobilenumber, email, basic_pay):
@@ -87,6 +88,8 @@ class SalaryPeriod(db.Model):
     started_on = db.Column(db.DateTime)
     started_by = db.Column(db.Integer, db.ForeignKey('user.id'))
     salaryslips = db.relationship('SalarySlip', backref='period', lazy='dynamic')
+    disbursements = db.relationship('Disbursement', backref='period', lazy='dynamic')
+    disbursement_others = db.Column(db.String)
 
 
     def __repr__(self):
@@ -163,4 +166,16 @@ class SalarySlip(db.Model):
 
     def __repr__(self):
         return '<emp-%d period-%d(%d/%d)>'%(self.employee_id, self.period_id, self.period.month, self.period.year)
+
+
+class Disbursement(db.Model):
+    __tablename__ = "disbursement"
+    id  = db.Column(db.Integer, primary_key=True)
+    period_id = db.Column(db.Integer, db.ForeignKey('period.id'))
+    employee_id = db.Column(db.Integer, db.ForeignKey('employee.id'))
+
+    lic = db.Column(db.Float)
+    something = db.Column(db.Float)
+    other1 = db.Column(db.Float)
+
 

@@ -290,7 +290,7 @@ def reportform(empid):
 def verifyentries():
     daysinmonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
     period = SalaryPeriod.query.filter_by(spark_completed=False).first()
-    slips = SalarySlip.query.filter_by(period_id = period.id).all()
+    slips = SalarySlip.query.filter_by(period_id = period.id).order_by(SalarySlip.employee_id).all()
     if request.method == 'POST':
         verified = request.form['verified']
         if verified:
