@@ -50,12 +50,12 @@ class Employee(db.Model):
     bank_name = db.Column(db.String)
     accno = db.Column(db.String, unique =True)
     pan_no = db.Column(db.String, unique = True)
-    basic_pay = db.Column(db.Float)
+    basic_pay = db.Column(db.Integer)
     salaryslips = db.relationship('SalarySlip', backref='employee', lazy='dynamic')
     disbursements = db.relationship('Disbursement', backref='employee', lazy='dynamic')
 
 
-    def __init__(self,empid, name, gender, designation, department, scheme, bank_name, accno, pan_no, mobilenumber, email, basic_pay):
+    def __init__(self,empid, name, gender, designation, department, scheme, bank_name, accno, pan_no, email, mobilenumber, basic_pay):
         self.empid = empid
         self.name = name
         self.gender = gender
@@ -178,4 +178,15 @@ class Disbursement(db.Model):
     something = db.Column(db.Float)
     other1 = db.Column(db.Float)
 
+    net_salary = db.Column(db.Float)
+
+    gross_salary = db.Column(db.Float)
+
+    def __init__(self, period, empid, lic, something, other1, net_salary):
+        self.period_id = period
+        self.employee_id = empid
+        self.lic = lic
+        self.something = something
+        self.other1 = other1
+        self.net_salary = net_salary
 

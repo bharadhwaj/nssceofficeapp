@@ -19,7 +19,7 @@
 <body style="padding-top: 70px;">
   {% include 'navbar.html' %}
   <div class="container">
-
+    {% include 'flash.html'%}
     <div class="row">
       <div class="col-md-6 col-md-offset-3">
         <h3>Prepare New Report</h3>
@@ -118,5 +118,6 @@
     </div>
   </div>
   <script src="{{ url_for('static', filename='js/jquery.js')}}"></script>
+  <script src="{{ url_for('static', filename='js/bootstrap.min.js')}}"></script>
 </body>
 </html>
