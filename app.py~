@@ -39,10 +39,26 @@ def before_request():
 @login_required
 def index():
 	if request.method == 'POST':
-		empid = request.form['empid']
-		return redirect(url_for('editemp',empid=empid))
+		title = request.form['title']
+		if title == 'edit':
+			empid = request.form['empid']
+			return redirect(url_for('editemp',empid=empid))
 	return render_template('index.html')
-    
+	
+@app.route('/',methods=['GET','POST'])
+@login_required
+def generaterep():
+	if request.method == 'POST':
+		if title == 'generate':
+			month = request.form['month']
+			year = request.form['year']
+			period = SalaryPeriod.query.filter_by(month = month).filter_by(year = year).first()
+    		slips = SalarySlip.query.filter_by(period_id=period.id).order_by(SalarySlip.employee_id)
+    		disbs = Disbursement.query.filter_by(period_id=period.id).order_by(Disbursement.employee_id)
+    		data = zip(slips,disbs)
+    		return render_template('viewall.html', data=data, period=period)
+
+ 
 @app.route('/employees')
 @login_required
 def employees():    
@@ -421,23 +437,37 @@ def viewall():
     data = zip(slips,disbs)
     return render_template('viewall.html', data=data, period=period)
 
-@app.route('/generates',methods=['GET','POST'])
+@app.route('/generate',methods=['GET','POST'])
 @login_required
 def generate():
-    employees = Employee.query.all()
-    empjson = []
-    for i in employees:
-        app.logger.info(i.__dict__)
-        d = dict(i.__dict__)
-        d.pop('_sa_instance_state')
-        empjson.append(d)
-        
-    empjson = json.dumps(empjson)
+	if request.method == 'POST':
+		month = request.form['month']
+		year = request.form['year']
+		sort = request.form['sort']
+		period = SalaryPeriod.query.filter_by(month = month).filter_by(year = year).first()
+    	slips = SalarySlip.query.filter_by(period_id=period.id).order_by(SalarySlip.employee_id)
+    	disbs = Disbursement.query.filter_by(period_id=period.id).order_by(Disbursement.employee_id)
+    	data = zip(slips,disbs)
+    	sort = request.args.get('sort')
+    	if sort:
+    		return render_template('viewall.html', sort = sort, data=data, period=period)
+    	else:
+    		return render_template('viewall.html', data=data, period=period)
+    	
+   # employees = Employee.query.all()
+   # empjson = []
+   # for i in employees:
+   #     app.logger.info(i.__dict__)
+   #     d = dict(i.__dict__)
+   #     d.pop('_sa_instance_state')
+   #     empjson.append(d)
+   #     
+   # empjson = json.dumps(empjson)
 
-    app.logger.info(empjson)   
-    return render_template('generate.html', empjson=empjson)
+   # app.logger.info(empjson)   
+   # return render_template('generate.html', empjson=empjson) */
 
-@app.route('/generate')
+@app.route('/generates')
 @login_required
 def generateoptions():
 	period = SalaryPeriod.query.filter_by(disburse_completed=False).first()
