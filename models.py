@@ -175,7 +175,7 @@ class Disbursement(db.Model):
     period_id = db.Column(db.Integer, db.ForeignKey('period.id'))
     employee_id = db.Column(db.Integer, db.ForeignKey('employee.id'))
 
-    lic = db.Column(db.Float)
+    premiums_cut = db.Column(db.Float)
     something = db.Column(db.Float)
     other1 = db.Column(db.Float)
 
@@ -183,10 +183,10 @@ class Disbursement(db.Model):
 
     gross_salary = db.Column(db.Float)
 
-    def __init__(self, period, empid, lic, something, other1, net_salary):
+    def __init__(self, period, empid, premiums_cut, something, other1, net_salary):
         self.period_id = period
         self.employee_id = empid
-        self.lic = lic
+        self.premiums_cut = premiums_cut
         self.something = something
         self.other1 = other1
         self.net_salary = net_salary

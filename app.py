@@ -10,6 +10,7 @@ from threading import Thread
 import os
 import pytz
 import json
+import datetime
 
 from models import Employee, User, SalaryPeriod, SalarySlip, Disbursement, Premium
 from models import db
@@ -361,9 +362,10 @@ def verifyentries():
 def disbursementinput():
     period = SalaryPeriod.query.filter_by(disburse_completed=False).first()
     if request.method == 'POST':
+        app.logger.info(request.form)
         empid = request.form['empid']
         employee = Employee.query.get(int(empid))
-        lic = request.form['lic']
+        premiums_cut = request.form['premiums_cut']
         something = request.form['something']
         other1 = request.form['other1']
        
@@ -371,8 +373,8 @@ def disbursementinput():
         if request.form['hasslip'] == 'True':
             slip = Disbursement.query.filter_by(employee_id = int(empid), period_id = period.id).first()
             app.logger.info('Found existing slip: %r'%slip)
-            slip.lic = lic
-            slip.somethi = something
+            slip.premiums_cut = premiums_cut
+            slip.something = something
             slip.other1 = other1
            
 
@@ -381,8 +383,15 @@ def disbursementinput():
 
         else:
             sparkslip = SalarySlip.query.filter_by(period_id=period.id, employee_id=employee.id).first()
-            empslip = Disbursement(period.id, employee.id, lic, something, other1, sparkslip.net_salary)
-
+            empslip = Disbursement(period.id, employee.id, premiums_cut, something, other1, sparkslip.net_salary)
+            empslip.premiums_cut = 0
+            premiums = employee.premiums.filter(Premium.upto_year >= period.year).all()
+            for premium in premiums:
+                if premium.upto_year == period.year:
+                    if premium.upto_month >= period.month:
+                        empslip.premiums_cut += premium.monthly_amount
+                else:
+                        empslip.premiums_cut += premium.monthly_amount
             db.session.add(empslip)
             db.session.commit()
 
@@ -423,7 +432,7 @@ def verifydisbursals():
         verified = request.form['verified']
         if verified:
             for slip in slips:
-                slip.gross_salary = slip.net_salary - slip.lic - slip.something - slip.other1
+                slip.gross_salary = slip.net_salary - slip.premiums_cut - slip.something - slip.other1
 
                 db.session.add(slip)
 
