@@ -453,19 +453,14 @@ def viewall():
 @app.route('/generate',methods=['GET','POST'])
 @login_required
 def generate():
-    employees = Employee.query.all()
-    empjson = []
-    for i in employees:
-        app.logger.info(i.__dict__)
-        d = dict(i.__dict__)
-        d.pop('_sa_instance_state')
-        empjson.append(d)
-        
-    empjson = json.dumps(empjson)
-
-    app.logger.info(empjson)   
-    return render_template('generate.html', empjson=empjson)
-
+    if request.method == 'POST':
+		month = request.form['month']
+		year = request.form['year']
+		period = SalaryPeriod.query.filter_by(month = month).filter_by(year = year).first()
+		slips = SalarySlip.query.filter_by(period_id=period.id).order_by(SalarySlip.employee_id)
+		disbs = Disbursement.query.filter_by(period_id=period.id).order_by(Disbursement.employee_id)
+		data = zip(slips,disbs)
+		return render_template('viewall.html',data=data, period=period)
 
 @app.route('/test/<template>')
 def test(template):
