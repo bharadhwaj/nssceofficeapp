@@ -190,3 +190,25 @@ class Disbursement(db.Model):
         self.other1 = other1
         self.net_salary = net_salary
 
+class Premium(db.Model):
+    __tablename__ = "premium"
+    id = db.Column(db.Integer, primary_key = True)
+    employee_id = db.Column(db.Integer, db.ForeignKey('employee.id'))
+    name = db.Column(db.String, nullable=False)
+    number = db.Column(db.String, nullable = False)
+    monthly_amount = db.Column(db.Float)
+    total_premium = db.Column(db.Float)
+    date_updated = db.Column(db.DateTime)
+    upto_month = db.Column(db.Integer)
+    upto_year = db.Column(db.Integer)
+
+
+    def __init__(self,employee_id, name, number, total_premium, monthly_amount, upto_month, upto_year):
+        self.employee_id = employee_id
+        self.name = name
+        self.number = number
+        self.total_premium = total_premium
+        self.monthly_amount = monthly_amount
+        self.upto_year = upto_year
+        self.upto_month = upto_month
+        self.date_updated = datetime.datetime.utcnow()
