@@ -11,143 +11,308 @@
 
   <!-- <link type = "text/css" href="static/css/bootstrap.css" rel="stylesheet" --> 
   <link href="{{ url_for('static', filename='css/bootswatch.css')}}" rel="stylesheet">
-  <link type = "text/css" href="static/css/styles.css" rel="stylesheet">
-  <script src="static/js/jquery.js"></script>
-  <script src="static/js/bootstrap.min.js"></script>
-
+  <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet">
+  <script src="{{ url_for('static', filename='js/jquery.js')}}"></script>
+  <script src="{{ url_for('static', filename='js/bootstrap.min.js')}}"></script>
 </head>
 
 <body style="padding-top: 70px;">
-{% include 'navbar.html' %}
- <div class="container">
+  {% include 'navbar.html' %}
+  <div class="container">
 
-  <div class="row">
+    <div class="row">
 
-   <div class="col-md-8 col-md-offset-2">
-     <h3>Edit Employee Details</h3>
+     <div class="col-md-6">
+       <h3>Edit Employee Details</h3>
 
-     <div class="panel panel-default">
-      <div class="panel-body">
-        <form id="form"  role="form" method="post" class="form form-horizontal">
-          <div class="form-group">
-          <label class="col-sm-3 control-label" for="userid">EMPLOYEE ID</label>
-            <div class="col-sm-9">
-              <input type="text" class="form-control" name="empid" value="{{emp.empid}}" placeholder="Enter Employee ID" required>
+       <div class="panel panel-default">
+        <div class="panel-body">
+          <form id="form"  role="form" method="post" class="form form-horizontal">
+            <div class="form-group">
+              <label class="col-sm-3 control-label" for="userid">EMPLOYEE ID</label>
+              <div class="col-sm-9">
+                <input type="text" class="form-control" name="empid" value="{{emp.empid}}" placeholder="Enter Employee ID" required>
+              </div>
+            </div>
+
+            <div class="form-group" class="col-sm-2 control-label">
+              <label class="col-sm-3 control-label" for="name">NAME</label>
+              <div class="col-sm-9">
+                <input type="text" class="form-control" name="name" value="{{emp.name}}" placeholder="Enter name" required>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-3 control-label" for="gender">GENDER</label>
+              <div class="col-sm-9">
+                <select class="form-control" name="gender">
+                 <option {{'selected' if emp.gender == 'Male'}} value="Male">Male</option>
+                 <option {{'selected' if emp.gender == 'Female'}} value="Female">Female</option>
+               </select>
+             </div>
+           </div>
+           <div class="form-group">
+             <label class="col-sm-3 control-label" for="designation">DESIGNATION</label>
+             <div class="col-sm-9">
+              <select class="form-control" name="designation">
+                <option {{'selected' if emp.designation == 'Professor'}} value="Professor">Professor</option>
+                <option {{'selected' if emp.designation == 'Assistant Prof.'}} value="Assistant Prof.">Assistant Professor</option>
+                <option {{'selected' if emp.designation == 'Superintendent'}} value="Superintendent">Superintendent</option>
+                <option {{'selected' if emp.designation == 'Clerk'}} value="Clerk">Clerk</option>
+                <option {{'selected' if emp.designation == 'Others'}} value="Others">Others</option>
+              </select>
             </div>
           </div>
-
-
-
-          <div class="form-group" class="col-sm-2 control-label">
-          <label class="col-sm-3 control-label" for="name">NAME</label>
-            <div class="col-sm-9">
-            <input type="text" class="form-control" name="name" value="{{emp.name}}" placeholder="Enter name" required>
-          </div>
-          </div>
           <div class="form-group">
-          <label class="col-sm-3 control-label" for="gender">GENDER</label>
+            <label class="col-sm-3 control-label" for="department">DEPARTMENT</label>
             <div class="col-sm-9">
-            <select class="form-control" name="gender">
-             <option {{'selected' if emp.gender == 'Male'}} value="Male">Male</option>
-             <option {{'selected' if emp.gender == 'Female'}} value="Female">Female</option>
-           </select>
-         </div>
+              <select class="form-control" name="department">
+               <option {{'selected' if emp.department == 'CE'}} value="CE">Department of Civil Engineering.</option>
+               <option {{'selected' if emp.department == 'CSE'}} value="CSE">Department of Computer Science & Engineering.</option>
+               <option {{'selected' if emp.department == 'ECE'}} value="ECE">Department of Electronic & Communication Engineering.</option>
+               <option {{'selected' if emp.department == 'EEE'}}value="EEE">Department of Electrical & Electrical Engineering.</option>
+               <option {{'selected' if emp.department == 'IC'}}value="IC">Department of Instrumentation & Control Engineering.</option>
+               <option {{'selected' if emp.department == 'ME'}}value="ME">Department of Mechanical Engineering.</option>
+               <option {{'selected' if emp.department == 'Office'}}value="Office">Office.</option>
+             </select>
+           </div>
          </div>
          <div class="form-group">
-         <label class="col-sm-3 control-label" for="designation">DESIGNATION</label>
-          <div class="col-sm-9">
-          <select class="form-control" name="designation">
-            <option {{'selected' if emp.designation == 'Professor'}} value="Professor">Professor</option>
-            <option {{'selected' if emp.designation == 'Assistant Prof.'}} value="Assistant Prof.">Assistant Professor</option>
-            <option {{'selected' if emp.designation == 'Superintendent'}} value="Superintendent">Superintendent</option>
-            <option {{'selected' if emp.designation == 'Clerk'}} value="Clerk">Clerk</option>
-            <option {{'selected' if emp.designation == 'Others'}} value="Others">Others</option>
-          </select>
-        </div>
+           <label class="col-sm-3 control-label" for="employeetype">EMPLOYEE TYPE</label>
+           <div class="col-sm-9">
+            <select class="form-control" name="emp-type">
+              <option {{'selected' if emp.scheme == 'State'}} value="State">State</option>
+              <option {{'selected' if emp.scheme == 'AICTE'}} value="AICTE">AICTE</option>
+              <option {{'selected' if emp.scheme == 'UGC'}} value="UGC">UGC</option>
+              <option {{'selected' if emp.scheme == 'QIP'}} value="QIP">QIP</option>
+            </select>
+          </div>
         </div>
         <div class="form-group">
-        <label class="col-sm-3 control-label" for="department">DEPARTMENT</label>
-        <div class="col-sm-9">
-          <select class="form-control" name="department">
-           <option {{'selected' if emp.department == 'CE'}} value="CE">Department of Civil Engineering.</option>
-           <option {{'selected' if emp.department == 'CSE'}} value="CSE">Department of Computer Science & Engineering.</option>
-           <option {{'selected' if emp.department == 'ECE'}} value="ECE">Department of Electronic & Communication Engineering.</option>
-           <option {{'selected' if emp.department == 'EEE'}}value="EEE">Department of Electrical & Electrical Engineering.</option>
-           <option {{'selected' if emp.department == 'IC'}}value="IC">Department of Instrumentation & Control Engineering.</option>
-           <option {{'selected' if emp.department == 'ME'}}value="ME">Department of Mechanical Engineering.</option>
-           <option {{'selected' if emp.department == 'Office'}}value="Office">Office.</option>
-         </select>
-       </div>
+          <label class="col-sm-3 control-label" for="basicpay">BASIC PAY</label>
+          <div class="col-sm-9">
+            <div class="input-group">
+              <div class="input-group-addon">Rs.</div>
+              <input class="form-control" type="text" name="bp-rs" placeholder="Rupees" required maxlength="10" value="{{str(emp.basic_pay).split('.')[0]}}">
+              <div class="input-group-addon"> Ps.</div>
+              <input class="form-control" type="text" name="bp-ps" placeholder="Paise" maxlength="2" value="{{str(emp.basic_pay).split('.')[1]}}">
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-3 control-label" for="banktype">BANK TYPE</label>
+          <div class="col-sm-9">
+            <select class="form-control" name = "bank">
+             <option {{'selected' if emp.scheme == 'SBI'}} value="SBI">State Bank of India</option>
+             <option {{'selected' if emp.scheme == 'SBT'}} value="SBT">State Bank of Tranvancore</option>
+             <option {{'selected' if emp.scheme == 'Indian Bank'}} value="Indian Bank">Indian Bank</option>
+           </select>
+         </div>
        </div>
        <div class="form-group">
-       <label class="col-sm-3 control-label" for="employeetype">EMPLOYEE TYPE</label>
-       <div class="col-sm-9">
-        <select class="form-control" name="emp-type">
-          <option {{'selected' if emp.scheme == 'State'}} value="State">State</option>
-          <option {{'selected' if emp.scheme == 'AICTE'}} value="AICTE">AICTE</option>
-          <option {{'selected' if emp.scheme == 'UGC'}} value="UGC">UGC</option>
-          <option {{'selected' if emp.scheme == 'QIP'}} value="QIP">QIP</option>
-        </select>
-      </div>
-      </div>
-      <div class="form-group">
-      <label class="col-sm-3 control-label" for="basicpay">BASIC PAY</label>
-        <div class="col-sm-9">
-        <div class="input-group">
-          <div class="input-group-addon">Rs.</div>
-          <input class="form-control" type="text" name="bp-rs" placeholder="Rupees" required maxlength="10" value="{{str(emp.basic_pay).split('.')[0]}}">
-          <div class="input-group-addon"> Ps.</div>
-          <input class="form-control" type="text" name="bp-ps" placeholder="Paise" maxlength="2" value="{{str(emp.basic_pay).split('.')[1]}}">
+         <label class="col-sm-3 control-label" for="pan">BANK ACCOUNT NUMBER</label>
+         <div class="col-sm-9">
+          <input type="text" class="form-control" name="accno" placeholder="Enter Bank Account Number" required value="{{emp.accno}}">
         </div>
       </div>
+      <div class="form-group">
+        <label class="col-sm-3 control-label" for="pan">PAN NUMBER</label>
+        <div class="col-sm-9">
+          <input type="text" class="form-control" name="pan" placeholder="Enter PAN Number" required value="{{emp.pan_no}}">
+        </div>
       </div>
       <div class="form-group">
-      <label class="col-sm-3 control-label" for="banktype">BANK TYPE</label>
-      <div class="col-sm-9">
-        <select class="form-control" name = "bank">
-         <option {{'selected' if emp.scheme == 'SBI'}} value="SBI">State Bank of India</option>
-         <option {{'selected' if emp.scheme == 'SBT'}} value="SBT">State Bank of Tranvancore</option>
-         <option {{'selected' if emp.scheme == 'Indian Bank'}} value="Indian Bank">Indian Bank</option>
-       </select>
-     </div>
-     </div>
-     <div class="form-group">
-     <label class="col-sm-3 control-label" for="pan">BANK ACCOUNT NUMBER</label>
-      <div class="col-sm-9">
-      <input type="text" class="form-control" name="accno" placeholder="Enter Bank Account Number" required value="{{emp.accno}}">
-    </div>
-    </div>
-    <div class="form-group">
-    <label class="col-sm-3 control-label" for="pan">PAN NUMBER</label>
-      <div class="col-sm-9">
-      <input type="text" class="form-control" name="pan" placeholder="Enter PAN Number" required value="{{emp.pan_no}}">
-    </div>
-    </div>
-    <div class="form-group">
-    <label class="col-sm-3 control-label" for="email">EMAIL</label>
-      <div class="col-sm-9">
-      <input type="email" class="form-control" name="email" placeholder="Enter email" required value="{{emp.email}}">
-    </div>
-    </div>
-    <div class="form-group">
-    <label class="col-sm-3 control-label" for="mobilenumber">MOBILE NUMBER</label>
-      <div class="col-sm-9">
-      <div class="input-group">
-        <div class="input-group-addon">+91</div>
-        <input class="form-control" type="text" name="mobilenumber"placeholder="Mobile number" required maxlength="10" value="{{emp.mobilenumber}}">
+        <label class="col-sm-3 control-label" for="email">EMAIL</label>
+        <div class="col-sm-9">
+          <input type="email" class="form-control" name="email" placeholder="Enter email" required value="{{emp.email}}">
+        </div>
       </div>
+      <div class="form-group">
+        <label class="col-sm-3 control-label" for="mobilenumber">MOBILE NUMBER</label>
+        <div class="col-sm-9">
+          <div class="input-group">
+            <div class="input-group-addon">+91</div>
+            <input class="form-control" type="text" name="mobilenumber"placeholder="Mobile number" required maxlength="10" value="{{emp.mobilenumber}}">
+          </div>
+        </div>
       </div>
+      <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+      <input type="hidden" name="formtype" value="editemp">
+      <button type="submit" class="btn btn-success" id="submit-button">Update</button>
+      <a id ="cancel-button" class="btn btn-warning" href="{{url_for('index')}}">
+        Cancel </a>
+      </form>
     </div>
-     <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
-    <button type="submit" class="btn btn-success" id="submit-button">Update</button>
-    <a id ="cancel-button" class="btn btn-warning" href="{{url_for('index')}}">
-      Cancel </a>
-    </form>
+  </div>
+</div>
+<div class="col-md-6">
+  <h3>Add/Remove Insurance Premiums</h3>
+  <div class="panel panel-default">
+    <div class="panel-body">
+      <button type="button" data-toggle="modal" data-target="#addPremiumModal" class="btn btn-primary" id="submit-button">Add New</button>
+      <hr/>
+      <table id="insuranceTable" class="table table-hover table-striped">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Number</span></th>
+            <th>Total</th>
+            <th>Montly</th>
+            <th>Upto</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+         {% for premium in emp.premiums.all()%}
+         <tr> 
+          <td>{{loop.index}}</td>
+          <td>{{premium.name}}</td>
+          <td>{{premium.number}}</td>
+          <td>{{premium.total_premium}}</td>
+          <td>{{premium.monthly_amount}}</td>
+          <td>{{"%02d-%d"%(premium.upto_month, premium.upto_year)}}</td>
+          <td><span data-toggle="modal" data-target="" class="glyphicon glyphicon-pencil" aria-hidden="true" data-premium="{{premium.id}}" data-premium-name="{{premium.name}}" data-premium-number="{{premium.number}}" data-premium-total_premium="{{premium.total_premium}}" data-premium-monthly_amount="{{premium.monthly_amount}}" data-premium-upto="{{"%02d-%d"%(premium.upto_month, premium.upto_year)}}"  ></span>
+            <span data-toggle="modal" data-target="#delModal" class="glyphicon glyphicon-remove pull-right" aria-hidden="true" data-id="{{premium.id}}" data-name="{{premium.name}}" data-number="{{premium.number}}" data-total="{{premium.total_premium}}" data-monthly="{{premium.monthly_amount}}" data-upto="{{"%02d-%d"%(premium.upto_month, premium.upto_year)}}"></span></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </table>
   </div>
 </div>
 </div>
+</div>
 
 
 </div>
 </div>
+
+
+<!-- Delmodal: -->
+<div class="modal fade" id="delModal" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="myModalLabel">Delete Premium</h4>
+      </div>
+      <div class="modal-body">
+        Are you sure you want to delete this premium?
+        <p>Details:</p>
+        <ul>
+          <li >Name: <span name="pname"></span></li>
+          <li >Number: <span name="pnumber"></span></li>
+          <li >Total amount: <span name="ptotal"></span></li>
+          <li >Monthly amount: <span name="pmonthly"></span></li>
+          <li >Upto: <span name="pupto"></span></li>
+        </ul>
+      </div>
+      <div class="modal-footer">
+        <form method="post">
+          <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+          <input type="hidden" name="formtype" value="delpremium">
+          <input type="hidden" name="pid" value="">
+          <button type="submit" class="btn btn-primary">Yes</button>
+          <button type="button" class="btn" data-dismiss="modal">No</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<div class="modal fade" id="addPremiumModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Add new premium to employee: {{emp.empid}} </h4>
+      </div>
+      <div class="modal-body">
+        <form id="form"  role="form" method="post" class="form form-horizontal">
+              <div class="form-group">
+              <label class="col-sm-3 control-label" for="year">NAME</label>
+                <div class="col-sm-4">
+                  <input type="text" class="form-control" name="name" placeholder="Enter Name" required>
+                </div>
+              </div>
+              <div class="form-group">
+              <label class="col-sm-3 control-label" for="year">NUMBER</label>
+                <div class="col-sm-4">
+                  <input type="text" class="form-control" name="number" placeholder="Enter Number" required>
+                </div>
+              </div>
+              <div class="form-group">
+              <label class="col-sm-3 control-label" for="year">TOTAL AMOUNT</label>
+                <div class="col-sm-4">
+                  <input type="text" class="form-control" name="total" placeholder="Enter Total amout" required>
+                </div>
+              </div>
+              <div class="form-group">
+              <label class="col-sm-3 control-label" for="year">MONTHLY AMOUNT</label>
+                <div class="col-sm-4">
+                  <input type="text" class="form-control" name="monthly" placeholder="Enter Monthly amount" required>
+                </div>
+              </div>
+              <div class="form-group">
+              <label class="col-sm-3 control-label" for="year">UPTO:</label>
+                <div class="col-sm-4">
+                  <select class="form-control" name="upto_month">
+                   <option value="1">January</option>
+                   <option value="2">February</option>
+                   <option value="3">March</option>
+                   <option value="4">April</option>
+                   <option value="5">May</option>
+                   <option value="6">June</option>
+                   <option value="7">July</option>
+                   <option value="8">August</option>
+                   <option value="9">September</option>
+                   <option value="10">October</option>
+                   <option value="11">November</option>
+                   <option value="12">December</option>
+                  </select>
+                </div>
+                <div class="col-sm-4">
+                <input type="text" class="form-control" name="upto_year" placeholder="Enter Year" required>
+              </div>
+              <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+              <input type="hidden" name="formtype" value="addpremium">
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Add premium</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div> 
+
+
+
+
+
+<script type="text/javascript">
+
+  $('#delModal').on('show.bs.modal', function (event) {
+  var button = $(event.relatedTarget); // Button that triggered the modal
+  var name = button.data('name'); // Extract info from data-* attributes
+  var number = button.data('number');
+  var total = button.data('total');
+  var monthly = button.data('monthly');
+  var upto = button.data('upto');
+  var id = button.data('id');
+  console.log(total)
+
+  // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+  // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+  $('[name=pname]').text(name);
+  $('[name=pnumber]').text(number);
+  $('[name=ptotal]').text(total);
+  $('[name=pmonthly]').text(monthly);
+  $('[name=pupto]').text(upto);
+  $('[name=pid]').val(id);
+})
+</script>
 </body>
+</html>

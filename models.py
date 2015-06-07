@@ -53,6 +53,7 @@ class Employee(db.Model):
     basic_pay = db.Column(db.Integer)
     salaryslips = db.relationship('SalarySlip', backref='employee', lazy='dynamic')
     disbursements = db.relationship('Disbursement', backref='employee', lazy='dynamic')
+    premiums = db.relationship('Premium', backref='employee', lazy='dynamic')
 
 
     def __init__(self,empid, name, gender, designation, department, scheme, bank_name, accno, pan_no, email, mobilenumber, basic_pay):

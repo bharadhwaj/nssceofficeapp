@@ -1,5 +1,5 @@
 from app import app
-from models import db, User, Employee
+from models import db, User, Employee, Premium
 db.init_app(app)
 
 with app.app_context():
@@ -19,4 +19,8 @@ with app.app_context():
  	db.session.add(emp2)
  	db.session.add(emp3)
  	db.session.add(user)
+
+ 	premium1 = Premium(1, 'LIC', '12354LIC', 250000, 1000, 5,2025)
+ 	db.session.add(premium1)
+ 	
  	db.session.commit()

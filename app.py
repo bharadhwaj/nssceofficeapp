@@ -11,7 +11,7 @@ import os
 import pytz
 import json
 
-from models import Employee, User, SalaryPeriod, SalarySlip, Disbursement
+from models import Employee, User, SalaryPeriod, SalarySlip, Disbursement, Premium
 from models import db
 
 app = Flask(__name__)
@@ -93,40 +93,60 @@ def editemp(empid):
         	return redirect(url_for('index'))
 
     elif request.method == 'POST':
-        app.logger.info(repr(request.form))
-        empid = request.form['empid']
-        name = request.form['name']
-        gender = request.form['gender']
-        designation = request.form['designation']
-        department = request.form['department']
-        emptype = request.form['emp-type']
-        accno = request.form['accno']
-        bprs = request.form['bp-rs']
-        bpps = request.form['bp-ps']
-        bank = request.form['bank']
-        pan = request.form['pan']
-        email = request.form['email']
-        mobilenumber = request.form['mobilenumber']
-        bp = int(bprs)+(int(bpps)/100.0)
-        user = Employee.query.filter_by(empid = empid).first()
+        employee = Employee.query.filter_by(empid = empid).first()
+        app.logger.info(employee)
+        if request.form['formtype'] == "editemp":
+            app.logger.info(repr(request.form))
+            empid = request.form['empid']
+            name = request.form['name']
+            gender = request.form['gender']
+            designation = request.form['designation']
+            department = request.form['department']
+            emptype = request.form['emp-type']
+            accno = request.form['accno']
+            bprs = request.form['bp-rs']
+            bpps = request.form['bp-ps']
+            bank = request.form['bank']
+            pan = request.form['pan']
+            email = request.form['email']
+            mobilenumber = request.form['mobilenumber']
+            bp = int(bprs)+(int(bpps)/100.0)
+            
 
-        user.empid = empid
-        user.name = name
-        user.gender = gender
-        user.designation = designation
-        user.department = department
-        user.emptype = emptype
-        user.accno = accno
-        user.basic_pay = bp
-        user.bank_name = bank
-        user.pan_no = pan
-        user.mobilenumber = mobilenumber
-        user.email = email
-        user.mobilenumber = mobilenumber
+            employee.empid = empid
+            employee.name = name
+            employee.gender = gender
+            employee.designation = designation
+            employee.department = department
+            employee.emptype = emptype
+            employee.accno = accno
+            employee.basic_pay = bp
+            employee.bank_name = bank
+            employee.pan_no = pan
+            employee.mobilenumber = mobilenumber
+            employee.email = email
+            employee.mobilenumber = mobilenumber
 
-        db.session.commit()
+            db.session.commit()
+        elif request.form['formtype'] == 'addpremium':
+            premium_name = request.form['name']
+            premium_number = request.form['number']
+            premium_total_amount = request.form['total']
+            premium_monthly_amount = request.form['monthly']
+            premium_upto_month = request.form['upto_month']
+            premium_upto_year = request.form['upto_year']
 
-        return render_template('editemp.html', emp = user, str=str)
+            new_premium = Premium(employee.id, premium_name, premium_number,
+                premium_total_amount, premium_monthly_amount, premium_upto_month, premium_upto_year)
+            db.session.add(new_premium)
+            db.session.commit()
+        elif request.form['formtype'] == 'delpremium':
+            premium_id = request.form['pid']
+            premium = Premium.query.get(int(premium_id))
+            db.session.delete(premium)
+            db.session.commit()
+
+        return render_template('editemp.html', emp = employee, str=str)
 
 @app.route('/register',methods=['GET','POST'])
 @login_required
