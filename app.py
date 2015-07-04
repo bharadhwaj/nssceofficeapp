@@ -40,8 +40,16 @@ def before_request():
 @login_required
 def index():
 	if request.method == 'POST':
-		empid = request.form['empid']
-		return redirect(url_for('editemp',empid=empid))
+		name = request.form['name']
+		if name == 'edit_employee':
+			empid = request.form['empid']
+			return redirect(url_for('editemp',empid=empid))
+		if name == 'view_report':
+			year = request.form['year']
+			month = request.form['month']
+			#sort = request.args.form['sortby']
+			#values = Employee.query.order_by().all()
+			#return redirect(url_for('generate',year=year, month=month))#, values=values))	
 	return render_template('index.html')
     
 @app.route('/employees')
@@ -80,6 +88,7 @@ def logout():
     db.session.commit()
     logout_user()
     return redirect(url_for('index'))
+
 
 
 @app.route('/employee/<empid>',methods=['GET','POST'])
@@ -450,17 +459,55 @@ def viewall():
     data = zip(slips,disbs)
     return render_template('viewall.html', data=data, period=period)
 
-@app.route('/generate',methods=['GET','POST'])
+@app.route('/generate/<year>/<month>',methods=['GET','POST'])
 @login_required
-def generate():
-    if request.method == 'POST':
-		month = request.form['month']
-		year = request.form['year']
-		period = SalaryPeriod.query.filter_by(month = month).filter_by(year = year).first()
-		slips = SalarySlip.query.filter_by(period_id=period.id).order_by(SalarySlip.employee_id)
-		disbs = Disbursement.query.filter_by(period_id=period.id).order_by(Disbursement.employee_id)
-		data = zip(slips,disbs)
-		return render_template('viewall.html',data=data, period=period)
+def generate(year,month):
+    if request.method == 'GET':
+        period = SalaryPeriod.query.filter_by(year = year, month=month).first()
+        if period:
+            app.logger.info('Got period')
+            sortby = request.args.get('sortby')
+            app.logger.info(repr(request.args.get))
+            if sortby:
+                app.logger.info('Sorting by: '+sortby)
+
+                if sortby == 'bank': 
+                    bank = request.args.get('bank')
+                    app.logger.info(repr(request.args.get))
+                    if bank:
+                        app.logger.info('Got bank')
+                        app.logger.info('Sorting by bank: ' + bank)
+                        employees = Employee.query.filter_by(bank_name = str(bank)).all()
+                        slips  = []
+                        disbs  = []
+                        for e in employees:
+                            slips.append(e.salaryslips.filter_by(period_id = period.id).first())
+                            disbs.append(e.disbursements.filter_by(period_id = period.id).first())
+                        app.logger.info(slips)
+                        app.logger.info(disbs)
+                        data = zip(slips,disbs)
+                        return render_template('viewall.html',data=data, period=period, banks = app.config['BANK_TYPES'])
+                elif sortby == 'scheme':
+                    scheme = request.args.get('scheme')
+                    app.logger.info('Sorting by scheme: ' + scheme)
+                    if scheme:
+                        app.logger.info('Sorting by scheme: ' + scheme)
+                        employees = Employee.query.filter_by(scheme = scheme).all()
+                        slips  = []
+                        disbs  = []
+                        for e in employees:
+                            slips.append(e.salaryslips.filter_by(period_id = period.id).first())
+                            disbs.append(e.disbursements.filter_by(period_id = period.id).first())
+                        app.logger.info(slips)
+                        app.logger.info(disbs)
+                        data = zip(slips,disbs)
+                        return render_template('viewall.html',data=data, period=period, banks = app.config['BANK_TYPES'])
+
+            #return 'ok'
+        else:
+            flash('Report not generated for this month','warning')
+            return render_template('index.html')
+
 
 @app.route('/test/<template>')
 def test(template):

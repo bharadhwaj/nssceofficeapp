@@ -72,6 +72,7 @@
                <option {{'selected' if emp.department == 'EEE'}}value="EEE">Department of Electrical & Electrical Engineering.</option>
                <option {{'selected' if emp.department == 'IC'}}value="IC">Department of Instrumentation & Control Engineering.</option>
                <option {{'selected' if emp.department == 'ME'}}value="ME">Department of Mechanical Engineering.</option>
+               <option {{'selected' if emp.department == 'SCIENCE'}}value="SCIENCE">Basic Science and Humanities</option>
                <option {{'selected' if emp.department == 'Office'}}value="Office">Office.</option>
              </select>
            </div>
@@ -171,8 +172,8 @@
           <td>{{premium.total_premium}}</td>
           <td>{{premium.monthly_amount}}</td>
           <td>{{"%02d-%d"%(premium.upto_month, premium.upto_year)}}</td>
-          <td><span data-toggle="modal" data-target="" class="glyphicon glyphicon-pencil" aria-hidden="true" data-premium="{{premium.id}}" data-premium-name="{{premium.name}}" data-premium-number="{{premium.number}}" data-premium-total_premium="{{premium.total_premium}}" data-premium-monthly_amount="{{premium.monthly_amount}}" data-premium-upto="{{"%02d-%d"%(premium.upto_month, premium.upto_year)}}"  ></span>
-            <span data-toggle="modal" data-target="#delModal" class="glyphicon glyphicon-remove pull-right" aria-hidden="true" data-id="{{premium.id}}" data-name="{{premium.name}}" data-number="{{premium.number}}" data-total="{{premium.total_premium}}" data-monthly="{{premium.monthly_amount}}" data-upto="{{"%02d-%d"%(premium.upto_month, premium.upto_year)}}"></span></td>
+          <td><!-- <span data-toggle="modal" data-target="" class="glyphicon glyphicon-pencil" aria-hidden="true" data-premium="{{premium.id}}" data-premium-name="{{premium.name}}" data-premium-number="{{premium.number}}" data-premium-total_premium="{{premium.total_premium}}" data-premium-monthly_amount="{{premium.monthly_amount}}" data-premium-upto="{{"%02d-%d"%(premium.upto_month, premium.upto_year)}}"  ></span> -->
+            <span data-toggle="modal" data-target="#delModal" class="glyphicon glyphicon-remove" aria-hidden="true" data-id="{{premium.id}}" data-name="{{premium.name}}" data-number="{{premium.number}}" data-total="{{premium.total_premium}}" data-monthly="{{premium.monthly_amount}}" data-upto="{{"%02d-%d"%(premium.upto_month, premium.upto_year)}}"></span></td>
           </tr>
           {% endfor %}
         </tbody>

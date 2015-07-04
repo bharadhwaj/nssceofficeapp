@@ -9,7 +9,7 @@
 
   <title>Prepare New Report</title>
 
-  <!-- <link type = "text/css" href="static/css/bootstrap.css" rel="stylesheet" --> 
+  <!-- <link type = "text/css" href="static/css/bootstrap.css" rel="stylesheet" -->
   <link href="{{ url_for('static', filename='css/bootswatch.css')}}" rel="stylesheet">
   <link type = "text/css" href="static/css/styles.css" rel="stylesheet">
 
@@ -21,76 +21,89 @@
   <div class="container">
 
     <div class="row">
-      <div class="col-md-12 ">
-      <h4>Final Report for: {{period.month}} / {{period.year}}</h4>
-      
-      <table id="empTable" class="table table-hover table-bordered">
-      <thead>
-      <th colspan="4"><center>PERSONAL DETAILS</center></th>
-      <th colspan="4"><center>BASIC SALARY</center></th>
-      <th colspan="9"><center>SPARK CUTTINGS</center></th>
-      <th colspan="4"><center>DISBURSEMENTS</center></th>
-      </tr>
-    
-                <tr>
-                  <th>ID</th>
-                  <th> NAME </th>
-                  <th> SCHEME </th>
-                  <th >BASIC</th>
-                  <th >AGP</th>
-                  <th >DA</th>
-                  <th >HRA</th>
-                  <th >Other</th>
-                  <th>PF</th>
-                  <th>PF-Loan</th>
-                  <th>SLI</th>
-                  <th>FBS</th>
-                  <th>GIS</th>
-                  <th>IT</th>
-                  <th>GPIS </th>
-                  <th>OTHER</th>
-                  <th>Net Salary</th>
-                  <th>PREMIUMS</th>
-                  <th>SOMETHING </th>
-                  <th>OTHER1</th>
-                  <th>NET PAYABLE</th>
-                </tr>
-    </thead>
-    <tbody>
-                 {% for slip,disb in data %}
-                <tr>
-                
-                <td>{{slip.employee.empid}}</td>
-                <td>{{slip.employee.name}}</td>
-                <td>{{slip.employee.scheme}}</td>
-                <td>{{slip.basic_pay}}</td>
-                <td>{{slip.agp}}</td>
-                <td>{{slip.da}}</td>
-                <td>{{slip.hra}}</td>
-                <td>{{slip.other}}</td>
-                <td>{{slip.pf}}</td>
-                <td>{{slip.pf_loan}}</td>
-                <td>{{slip.sli}}</td>
-                <td>{{slip.fbs}}</td>
-                <td>{{slip.gis}}</td>
-                <td>{{slip.income_tax}}</td>
-                <td>{{slip.gpis}}</td>
-                <td>{{slip.other2}}</td>
-                <td>{{disb.net_salary}}</td>
-                <td>{{disb.premiums_cut}}</td>
-                <td>{{disb.something}}</td>
-                <td>{{disb.other1}}</td>
-                <td>{{disb.gross_salary}}</td>
-                
-                </tr>
+      <div class="col-md-2">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h3 class="panel-title">Sort by:</h3>
+          </div>
+          <div class="panel-body">
+            <h5>Bank</h5>
+            <div class="list-group">
+              {% for code,bank in banks.items() %}
+              <a href="{{url_for('generate',year=period.year,month = period.month, sortby='bank', bank=code)}}" class="list-group-item">{{bank}}</li>
                 {% endfor %}
-  </table>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-10" >
+          <h4>Final Report for: {{period.month}} / {{period.year}}</h4>
+          <br/>
 
-        
+          <table id="empTable" class="table table-hover table-bordered table-responsive">
+            <thead>
+              <th colspan="4"><center>PERSONAL DETAILS</center></th>
+              <th colspan="4"><center>BASIC SALARY</center></th>
+              <th colspan="9"><center>SPARK CUTTINGS</center></th>
+              <th colspan="4"><center>DISBURSEMENTS</center></th>
+            </tr>
 
+            <tr>
+              <th>ID</th>
+              <th> NAME </th>
+              <th> SCHEME </th>
+              <th >BASIC</th>
+              <th >AGP</th>
+              <th >DA</th>
+              <th >HRA</th>
+              <th >Other</th>
+              <th>PF</th>
+              <th>PF-Loan</th>
+              <th>SLI</th>
+              <th>FBS</th>
+              <th>GIS</th>
+              <th>IT</th>
+              <th>GPIS </th>
+              <th>OTHER</th>
+              <th>Net Salary</th>
+              <th>PREMIUMS</th>
+              <th>SOMETHING </th>
+              <th>OTHER1</th>
+              <th>NET PAYABLE</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for slip,disb in data %}
+            <tr>
+
+              <td>{{slip.employee.empid}}</td>
+              <td>{{slip.employee.name}}</td>
+              <td>{{slip.employee.scheme}}</td>
+              <td>{{slip.basic_pay}}</td>
+              <td>{{slip.agp}}</td>
+              <td>{{slip.da}}</td>
+              <td>{{slip.hra}}</td>
+              <td>{{slip.other}}</td>
+              <td>{{slip.pf}}</td>
+              <td>{{slip.pf_loan}}</td>
+              <td>{{slip.sli}}</td>
+              <td>{{slip.fbs}}</td>
+              <td>{{slip.gis}}</td>
+              <td>{{slip.income_tax}}</td>
+              <td>{{slip.gpis}}</td>
+              <td>{{slip.other2}}</td>
+              <td>{{disb.net_salary}}</td>
+              <td>{{disb.premiums_cut}}</td>
+              <td>{{disb.something}}</td>
+              <td>{{disb.other1}}</td>
+              <td>{{disb.gross_salary}}</td>
+
+            </tr>
+            {% endfor %}
+          </table>
+        </div>
       </div>
     </div>
-  </div>
-  <script src="{{ url_for('static', filename='js/jquery.js')}}"></script>
-</body>
-</html>
+    <script src="{{ url_for('static', filename='js/jquery.js')}}"></script>
+  </body>
+  </html>

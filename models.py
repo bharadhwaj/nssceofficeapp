@@ -166,7 +166,7 @@ class SalarySlip(db.Model):
         # self.net_salary = self.gross - self.total_deductions
 
     def __repr__(self):
-        return '<emp-%d period-%d(%d/%d)>'%(self.employee_id, self.period_id, self.period.month, self.period.year)
+        return 'Salaryslip:<emp-%d period-%d(%d/%d)>'%(self.employee_id, self.period_id, self.period.month, self.period.year)
 
 
 class Disbursement(db.Model):
@@ -191,6 +191,10 @@ class Disbursement(db.Model):
         self.other1 = other1
         self.net_salary = net_salary
 
+    def __repr__(self):
+        return 'Disb:<emp-%d period-%d(%d/%d)>'%(self.employee_id, self.period_id, self.period.month, self.period.year)
+
+
 class Premium(db.Model):
     __tablename__ = "premium"
     id = db.Column(db.Integer, primary_key = True)
@@ -213,3 +217,5 @@ class Premium(db.Model):
         self.upto_year = upto_year
         self.upto_month = upto_month
         self.date_updated = datetime.datetime.utcnow()
+
+   

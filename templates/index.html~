@@ -42,6 +42,7 @@
                            
                            <div class="col-md-6 col-md-offset-3">
                            <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+                           <input type="hidden" name="name" value="edit_employee">
                            <input type="text" class="form-control" name="empid" placeholder="Enter the employee ID" required autofocus><br/>
                            <button class="btn btn-lg btn-success btn-block" type="submit">Submit</button>
                          
@@ -62,9 +63,10 @@
             		<div class="panel panel-default">
             		<div id="collapseTwo" class="panel-collapse collapse">
                 	  <div class="panel-body">
-                         <form class="form-signin" role="login" action="generate" method="post">
+                         <form class="form-signin" role="report" action="" method="post">
                            <div class="col-md-6 col-md-offset-3">
                            <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+                           <input type="hidden" name="name" value="view_report">
                            <div>
                             <div class="form-group">
               					<label  for="month">MONTH</label>
@@ -90,6 +92,16 @@
                   				<input type="number" class="form-control" name="year" placeholder="Enter Year" required>
                 				</div>
                 				<br/>
+                				<div class="form-group">
+              					<label for="sort">SORT BY</label>
+                				<div>
+                  				 	<select class="form-control" name="sortby">
+                   					<option value="bank_name">Bank</option>
+                   					<option value="scheme">Scheme</option>
+                   					<option value="department">Department</option>
+                  					</select>
+                				</div>
+                				</div>
               				</div>
                            <br/>
                            <button class="btn btn-lg btn-success btn-block" type="submit">Submit</button>

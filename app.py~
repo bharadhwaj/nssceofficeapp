@@ -40,8 +40,16 @@ def before_request():
 @login_required
 def index():
 	if request.method == 'POST':
-		empid = request.form['empid']
-		return redirect(url_for('editemp',empid=empid))
+		name = request.form['name']
+		if name == 'edit_employee':
+			empid = request.form['empid']
+			return redirect(url_for('editemp',empid=empid))
+		if name == 'view_report':
+			year = request.form['year']
+			month = request.form['month']
+			#sort = request.form['sortby']
+			values = Employee.query.filter_by(Employee.bank_name.distinct()).all()
+			return redirect(url_for('generate',year=year, month=month, values=values))	
 	return render_template('index.html')
     
 @app.route('/employees')
@@ -80,6 +88,21 @@ def logout():
     db.session.commit()
     logout_user()
     return redirect(url_for('index'))
+
+@app.route('/generate/<year>/<month>/<values>',methods=['GET','POST'])
+@login_required
+def generate(year,month,values):
+	if request.method == 'GET':
+		report = SalaryPeriod.query.filter_by(year = year, month=month).first()
+		if report:
+			period = SalaryPeriod.query.filter_by(month = month, year = year).first()
+			slips = SalarySlip.query.filter_by(period_id=period.id).order_by(SalarySlip.employee_id)
+			disbs = Disbursement.query.filter_by(period_id=period.id).order_by(Disbursement.employee_id)
+			data = zip(slips,disbs)
+			return render_template('viewall.html',data=data, period=period)
+		else:
+			flash('Report not generated for this month','warning')
+			return render_template('index.html')
 
 
 @app.route('/employee/<empid>',methods=['GET','POST'])
@@ -449,18 +472,6 @@ def viewall():
     disbs = Disbursement.query.filter_by(period_id=period.id).order_by(Disbursement.employee_id)
     data = zip(slips,disbs)
     return render_template('viewall.html', data=data, period=period)
-
-@app.route('/generate',methods=['GET','POST'])
-@login_required
-def generate():
-    if request.method == 'POST':
-		month = request.form['month']
-		year = request.form['year']
-		period = SalaryPeriod.query.filter_by(month = month).filter_by(year = year).first()
-		slips = SalarySlip.query.filter_by(period_id=period.id).order_by(SalarySlip.employee_id)
-		disbs = Disbursement.query.filter_by(period_id=period.id).order_by(Disbursement.employee_id)
-		data = zip(slips,disbs)
-		return render_template('viewall.html',data=data, period=period)
 
 @app.route('/test/<template>')
 def test(template):

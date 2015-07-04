@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <title>Prepare New Report</title>
+
+  <!-- <link type = "text/css" href="static/css/bootstrap.css" rel="stylesheet" --> 
+  <link href="{{ url_for('static', filename='css/bootswatch.css')}}" rel="stylesheet">
+  <link type = "text/css" href="static/css/styles.css" rel="stylesheet">
+
+
+</head>
+
+<body style="padding-top: 70px;background:#ffffff;">
+  {% include 'navbar.html' %}
+  <div class="container">
+
+    <div class="row">
+      <div class="col-md-12 ">
+      <h4>Final Report for: {{period.month}} / {{period.year}}</h4>
+      <br/>
+       <div class="form-group">
+       <label for="sort">SORT BY</label>
+       <div>
+       <select class="form-control" name="sortby">
+       {% for val in values %}
+       <option value="">Bank</option>
+       
+       </select>
+       </div>
+       </div>
+      <table id="empTable" class="table table-hover table-bordered">
+      <thead>
+      <th colspan="4"><center>PERSONAL DETAILS</center></th>
+      <th colspan="4"><center>BASIC SALARY</center></th>
+      <th colspan="9"><center>SPARK CUTTINGS</center></th>
+      <th colspan="4"><center>DISBURSEMENTS</center></th>
+      </tr>
+    
+                <tr>
+                  <th>ID</th>
+                  <th> NAME </th>
+                  <th> SCHEME </th>
+                  <th >BASIC</th>
+                  <th >AGP</th>
+                  <th >DA</th>
+                  <th >HRA</th>
+                  <th >Other</th>
+                  <th>PF</th>
+                  <th>PF-Loan</th>
+                  <th>SLI</th>
+                  <th>FBS</th>
+                  <th>GIS</th>
+                  <th>IT</th>
+                  <th>GPIS </th>
+                  <th>OTHER</th>
+                  <th>Net Salary</th>
+                  <th>PREMIUMS</th>
+                  <th>SOMETHING </th>
+                  <th>OTHER1</th>
+                  <th>NET PAYABLE</th>
+                </tr>
+    </thead>
+    <tbody>
+                 {% for slip,disb in data %}
+                <tr>
+                
+                <td>{{slip.employee.empid}}</td>
+                <td>{{slip.employee.name}}</td>
+                <td>{{slip.employee.scheme}}</td>
+                <td>{{slip.basic_pay}}</td>
+                <td>{{slip.agp}}</td>
+                <td>{{slip.da}}</td>
+                <td>{{slip.hra}}</td>
+                <td>{{slip.other}}</td>
+                <td>{{slip.pf}}</td>
+                <td>{{slip.pf_loan}}</td>
+                <td>{{slip.sli}}</td>
+                <td>{{slip.fbs}}</td>
+                <td>{{slip.gis}}</td>
+                <td>{{slip.income_tax}}</td>
+                <td>{{slip.gpis}}</td>
+                <td>{{slip.other2}}</td>
+                <td>{{disb.net_salary}}</td>
+                <td>{{disb.premiums_cut}}</td>
+                <td>{{disb.something}}</td>
+                <td>{{disb.other1}}</td>
+                <td>{{disb.gross_salary}}</td>
+                
+                </tr>
+                {% endfor %}
+  </table>
+
+        
+
+      </div>
+    </div>
+  </div>
+  <script src="{{ url_for('static', filename='js/jquery.js')}}"></script>
+</body>
+</html>
