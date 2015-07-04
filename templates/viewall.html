@@ -16,7 +16,7 @@
 
 </head>
 
-<body style="padding-top: 70px;background:#ffffff;">
+<body style="padding-top: 70px;">
   {% include 'navbar.html' %}
   <div class="container">
 
@@ -30,7 +30,7 @@
             <h5>Bank</h5>
             <div class="list-group">
               {% for code,bank in banks.items() %}
-              <a href="{{url_for('generate',year=period.year,month = period.month, sortby='bank', bank=code)}}" class="list-group-item">{{bank}}</li>
+              <a href="{{url_for('generate',year=period.year,month = period.month, sortby='bank', bank=code)}}" class="list-group-item">{{bank}}</a>
                 {% endfor %}
               </div>
             </div>
@@ -100,10 +100,9 @@
 
             </tr>
             {% endfor %}
+            </tbody>
           </table>
-        </div>
-      </div>
-    </div>
+
     <script src="{{ url_for('static', filename='js/jquery.js')}}"></script>
   </body>
   </html>
