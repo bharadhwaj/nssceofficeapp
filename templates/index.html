@@ -63,10 +63,12 @@
             		<div class="panel panel-default">
             		<div id="collapseTwo" class="panel-collapse collapse">
                 	  <div class="panel-body">
+
                          <form class="form-signin" role="report" action="" method="post">
                            <div class="col-md-6 col-md-offset-3">
                            <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
                            <input type="hidden" name="name" value="view_report">
+
                            <div>
                             <div class="form-group">
               					<label  for="month">MONTH</label>
@@ -92,6 +94,7 @@
                   				<input type="number" class="form-control" name="year" placeholder="Enter Year" required>
                 				</div>
                 				<br/>
+<<<<<<< HEAD
                 				<div class="form-group">
               					<label for="sort">SORT BY</label>
                 				<div>
@@ -102,6 +105,8 @@
                   					</select>
                 				</div>
                 				</div>
+=======
+>>>>>>> 8108bc152e9677acd0a38beb83e3f93cf463e4aa
               				</div>
                            <br/>
                            <button class="btn btn-lg btn-success btn-block" type="submit">Submit</button>
