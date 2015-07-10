@@ -494,7 +494,11 @@ def generate(year,month):
                         app.logger.info(slips)
                         app.logger.info(disbs)
                         data = zip(slips,disbs)
-                        return render_template('viewall.html',data=data, period=period, banks = app.config['BANK_TYPES'])
+                        bank_name = bank
+                        bank_total = sum([d.gross_salary for d in disbs])
+                        return render_template('viewall-bank.html',data=data, 
+                            period=period, banks = app.config['BANK_TYPES'],
+                            bank_name = bank_name, bank_total = bank_total)
                 elif sortby == 'scheme':
                     scheme = request.args.get('scheme')
                     app.logger.info('Sorting by scheme: ' + scheme)
