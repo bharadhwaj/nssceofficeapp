@@ -471,7 +471,15 @@ def generate(year,month):
             app.logger.info('Got period')
             sortby = request.args.get('sortby')
             app.logger.info(repr(request.args.get))
-            if sortby:
+            if not sortby:
+                slips = SalarySlip.query.filter_by(period_id=period.id).order_by(SalarySlip.employee_id)
+                disbs = Disbursement.query.filter_by(period_id=period.id).order_by(Disbursement.employee_id)
+                data = zip(slips,disbs)
+                return render_template('viewall.html', data=data, period=period, banks = app.config['BANK_TYPES'])
+
+
+
+            else:
                 app.logger.info('Sorting by: '+sortby)
 
                 if sortby == 'bank': 
