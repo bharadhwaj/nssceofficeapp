@@ -123,6 +123,8 @@ def editemp(empid):
             accno = request.form['accno']
             bprs = request.form['bp-rs']
             bpps = request.form['bp-ps']
+            if not bpps:
+                    bpps = str(00)
             bank = request.form['bank']
             pan = request.form['pan']
             email = request.form['email']
@@ -510,7 +512,7 @@ def verifydisbursals():
             period.disburse_completed = True;
             db.session.add(period)
             db.session.commit()
-            return redirect(url_for('viewall'))
+            return redirect(url_for('generate', year = period.year, month = period.month))
 
 @app.route('/viewall')
 @login_required

@@ -63,8 +63,10 @@
 
     <div class="row">
       <div class="col-md-2 sidebar">
-        
-          
+            <ul class="nav nav-stacked nav-pills">
+              <li role="presentation"><a href="{{url_for('generate',year=period.year,month = period.month)}}" class="list-group-item">View All</a></li>
+            </ul>
+            
             <h5>Bank</h5>
             <ul class="nav nav-stacked nav-pills">
               {% for code,bank in banks.items() %}
@@ -78,8 +80,22 @@
               </div> -->
         </div>
         <div class="col-md-10 col-md-offset-2 main" >
-          <h4>Final Report for: {{period.month}} / {{period.year}}</h4>
-          <h4>Bank: {{bank_name}} </h4>
+          <table>
+          <tr>
+            <td class="col-md-10" >
+              <h4>Final Report for: {{period.month}} / {{period.year}}</h4>
+              <h4>Bank: {{bank_name}} </h4>
+            </td>
+             <td>  
+              <form action="" method="post">
+                <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+                <input type="hidden" name="name" value="personal">
+                <input type="submit" class="btn btn-success btn-lg btn-block" value="Generate {{bank_name}} Bank Slip">
+              </form>
+            </td>
+          </tr>
+        </table>
+          
           <br/>
 
           <table id="empTable" class="table table-hover table-bordered table-responsive">
