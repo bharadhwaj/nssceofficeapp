@@ -467,8 +467,6 @@ def viewall():
 
     return render_template('viewall.html', data=data, period=period, banks = app.config['BANK_TYPES'])
 
-
-
 @app.route('/generate/<year>/<month>',methods=['GET','POST'])
 @login_required
 def generate(year,month):
