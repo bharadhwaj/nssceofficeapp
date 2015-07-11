@@ -523,6 +523,8 @@ def viewall():
     data = zip(slips,disbs)
     return render_template('viewall.html', data=data, period=period, banks = app.config['BANK_TYPES'])
 
+dataglobal = []
+
 @app.route('/generate/<year>/<month>',methods=['GET','POST'])
 @login_required
 def generate(year,month):
@@ -536,6 +538,8 @@ def generate(year,month):
                 slips = SalarySlip.query.filter_by(period_id=period.id).order_by(SalarySlip.employee_id)
                 disbs = Disbursement.query.filter_by(period_id=period.id).order_by(Disbursement.employee_id)
                 data = zip(slips,disbs)
+                global dataglobal
+                dataglobal = data
                 return render_template('viewall.html', data=data, period=period, banks = app.config['BANK_TYPES'])
 
 
@@ -558,6 +562,7 @@ def generate(year,month):
                         app.logger.info(slips)
                         app.logger.info(disbs)
                         data = zip(slips,disbs)
+
                         bank_name = bank
                         bank_total = sum([d.gross_salary for d in disbs])
                         return render_template('viewall-bank.html',data=data, 
@@ -577,6 +582,7 @@ def generate(year,month):
                         app.logger.info(slips)
                         app.logger.info(disbs)
                         data = zip(slips,disbs)
+                        
                         return render_template('viewall.html',data=data, period=period, banks = app.config['BANK_TYPES'])
 
             #return 'ok'
@@ -594,7 +600,7 @@ def generate(year,month):
                     'TIM',
                     [emp.email],
                     'Check in attachments',
-                    render_template('employeereport.html',employee = emp)
+                    render_template('employeereport.html',employee = emp, data = dataglobal)
                     )
                 app.logger.info('Mail sent')
 
@@ -625,7 +631,8 @@ def send_email(subject, sender, recipients, text_body, attachments):
 
 @app.route('/test/<template>')
 def test(template):
-    return render_template(template+'.html')
+    employee = Employee.query.all()
+    return render_template(template+'.html', employee = employee)
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0",port=5000)

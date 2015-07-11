@@ -43,7 +43,10 @@
                            <div class="col-md-6 col-md-offset-3">
                            <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
                            <input type="hidden" name="name" value="edit_employee">
-                           <input type="text" class="form-control" name="empid" placeholder="Enter the employee ID" required autofocus><br/>
+                           <label  for="year">EMPLOYEE ID</label>
+                           <div>
+                            <input type="text" class="form-control" name="empid" placeholder="Enter the employee ID" required autofocus><br/>
+                           </div> 
                            <button class="btn btn-lg btn-success btn-block" type="submit">Submit</button>
                          
                          </form>
@@ -92,7 +95,7 @@
                 				<label  for="year">YEAR</label>
                 				<div>
                   				<input type="number" class="form-control" name="year" placeholder="Enter Year" required>
-                				</div>
+                				</div></div><br/>
                 				<!-- <div class="form-group"> -->
               					<!-- <label for="sort">SORT BY</label>
                 				<div>

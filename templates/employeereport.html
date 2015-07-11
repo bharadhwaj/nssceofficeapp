@@ -22,10 +22,13 @@
       
         <div class="jumbotron">
           <h2> <small> NAME: </small> {{employee.name}} </h2>
-          <h4> <small> Designation: </small> Assistant Professor</h4>
-          <h4> <small> Department: </small> AICTE </h4>
-        </div>
+          <h4> <small> Designation: </small> {{employee.designation}}</h4>
+          <h4> <small> Department: </small> {{employee.department}} </h4>
+          <h4> <small> Bank: </small> {{employee.bank_name}} </h4>
+          <h4> <small> Account Number: </small> {{employee.accno}} </h4>
 
+        </div>
+        
         <table class="table table-striped ">
         <thead>
           <td>#</td>
@@ -33,17 +36,99 @@
           <td>Amount</td>
         </thead>
         <tr>
-          <td>1</td>
-          <td>Net salary</td>
-          <td>10000</td>
+        <th colspan="3"><center>Personal Details</center></th> 
         </tr>
         <tr>
-          <td>2</td>
-          <td>Gross salary</td>
-          <td>20000</td>
+          <td>1</td>
+          <td>Basic Pay</td>
+          <td>{{employee.basic_pay}}</td>
         </tr>
-        </table>
+        {% for slip in data %}
+        <tr>
+          <td>2</td>
+          <td>AGP</td>
+          <td>{{slip.agp}}</td>
+        </tr>
+        <tr>
+          <td>3</td>
+          <td>DA</td>
+          <td>{{slip.da}}</td>
+        </tr>
+        <tr>
+          <td>4</td>
+          <td>HRA</td>
+          <td>{{slip.hra}}</td>
+        </tr>
+        <tr>
+          <td>5</td>  
+          <td>Others</td>
+          <td>{{slip.other}}</td>
+        </tr>
+         <tr>
+        <th colspan="3"><center>Leave Details</center></th> 
+        </tr>
+        <tr>
+          <td>6</td>
+          <td>Half Pay</td>
+          <td>{{slip.halfpay}}</td>
+        </tr>
+        <tr>
+          <td>7</td>
+          <td>LWA</td>
+          <td>{{slip.lwa}}</td>
+        </tr>
+        <tr>
+        <th colspan="3"><center>Spark Details</center></th> 
+        </tr>
+        <tr>
+          <td>8</td>
+          <td>PF</td>
+          <td>{{slip.pf}}</td>
+        </tr>
+        <tr>
+          <td>9</td>
+          <td>PF-Loan</td>
+          <td>{{slip.pf_loan}}</td>
+        </tr>
+        <tr>
+          <td>10</td>
+          <td>SLI</td>
+          <td>{{slip.sli}}</td>
+        </tr>
+        <tr>
+          <td>11</td>
+          <td>FBS</td>
+          <td>{{slip.fbs}}</td>
+        </tr>
+        <tr>
+          <td>12</td>
+          <td>GIS</td>
+          <td>{{slip.gis}}</td>
+        </tr>
+        <tr>
+          <td>12</td>
+          <td>GIS</td>
+          <td>{{slip.gis}}</td>
+        </tr>
+        <tr>
+          <td>13</td>
+          <td>IT</td>
+          <td>{{slip.income_tax}}</td>
+        </tr>
+        <tr>
+          <td>14</td>
+          <td>GPIS</td>
+          <td>{{slip.gpis}}</td>
+        </tr>
+        <tr>
+        <th colspan="2"><center>Net Salary</center></th> 
+        <tr>{{slip.net_salary}}</tr>
+        </tr>
+        
+        {% endfor %}
 
+        </table>
+        
 
 
     </div>
