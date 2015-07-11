@@ -8,6 +8,8 @@ from flask import copy_current_request_context #for async mail
 from flask import jsonify
 from threading import Thread
 from flask_weasyprint import HTML, render_pdf
+from xhtml2pdf import pisa
+from StringIO import StringIO
 import os
 import pytz
 import json
@@ -24,7 +26,7 @@ app.config.from_object('config')
 
 db.init_app(app)
 csrf = SeaSurf(app)
-
+mail = Mail(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
@@ -528,14 +530,43 @@ def test(template):
 @login_required
 def generatepdf():
     if request.method == 'GET':
-        css = ['example.css', 'example2.css']
-        pdfkit.from_file('file.html', options=options, css=css)
+    	app.config.update(dict(
+        MAIL_SERVER = 'smtp.gmail.com',
+        MAIL_PORT = 465,
+        MAIL_USE_TLS = False,
+        MAIL_USE_SSL = True,
+        MAIL_ASCII_ATTACHMENTS = True,
+        MAIL_USERNAME = 'timnotifications@gmail.com',
+        MAIL_PASSWORD = 'tim is not moodle'
+    	))
+    	with app.app_context():
+    		with mail.connect() as conn:
+    			
+        		subject = "Mail with PDF"
+        		msg = Message(subject, sender = 'TIM', recipients = 'bharadhwaj10@gmail.com')
+        		html = render_template('employeereport.html')
+        		pdf = HTML(string=html).write_pdf()
+        		#pdf = create_pdf(render_template('employeereport.html'))
+        		msg.attach("file.pdf", "application/pdf", pdf)
+        		conn.send(msg)
+        
+        app.logger.info('Sent email')
+    	
+        
+    	
+        # css = ['example.css', 'example2.css']
+        # pdfkit.from_file('file.html', options=options, css=css)
         # html = render_template('employeereport.html')
         # return render_pdf(HTML(string=html))
         # pdfkit.from_url('http://google.com', 'out.pdf')
         # pdfkit.from_file('test.html', 'out.pdf')
         # pdfkit.from_string('Hello!', 'out.pdf')
 
+def create_pdf(pdf_data):
+    pdf = StringIO()
+    pisa.CreatePDF(StringIO(pdf_data), pdf)
+    return pdf
+
 
 if __name__ == '__main__':
-    app.run(host="0.0.0.0",port=8070)
+    app.run(host="0.0.0.0",port=5000)
