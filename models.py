@@ -175,20 +175,56 @@ class Disbursement(db.Model):
     period_id = db.Column(db.Integer, db.ForeignKey('period.id'))
     employee_id = db.Column(db.Integer, db.ForeignKey('employee.id'))
 
-    premiums_cut = db.Column(db.Float)
-    something = db.Column(db.Float)
-    other1 = db.Column(db.Float)
+    premiums_cut = db.Column(db.Float, default = 0)
+    telephone = db.Column(db.Float, default = 0)
+    tenancy_rent = db.Column(db.Float, default = 0)
+    cs_loan = db.Column(db.Float, default = 0)
+    cs_chitty = db.Column(db.Float, default = 0)
+    stamp = db.Column(db.Float, default = 0)
+    send_off = db.Column(db.Float, default = 0)
+    welfare_fund = db.Column(db.Float, default = 0)
+    dte_jp = db.Column(db.Float, default = 0)
+    jn = db.Column(db.Float, default = 0)
+    indian_bank = db.Column(db.Float, default = 0)
+    pdc_bank = db.Column(db.Float, default = 0)
+    ksfe = db.Column(db.Float, default = 0)
+    ksc_bank = db.Column(db.Float, default = 0)
+
+    other1 = db.Column(db.Float, default = 0)
+    other2 = db.Column(db.Float, default = 0)
+    other3 = db.Column(db.Float, default = 0)
 
     net_salary = db.Column(db.Float)
 
-    gross_salary = db.Column(db.Float)
+    gross_salary = db.Column(db.Float) #net-payable in tables
 
-    def __init__(self, period, empid, premiums_cut, something, other1, net_salary):
+    def __init__(self, period, empid, premiums_cut,
+                 telephone, tenancy_rent, cs_chitty, cs_loan,
+                 stamp, send_off, welfare_fund, dte_jp, jn, indian_bank,
+                 pdc_bank, ksfe, ksc_bank, other3, other2, other1, net_salary):
         self.period_id = period
         self.employee_id = empid
         self.premiums_cut = premiums_cut
-        self.something = something
+        
+        self.telephone = telephone
+        self.tenancy_rent = tenancy_rent
+        self.cs_loan = cs_loan
+        self.cs_chitty = cs_chitty
+        self.stamp = stamp
+        self.send_off = send_off
+        self.welfare_fund = welfare_fund
+        self.dte_jp = dte_jp
+        self.jn = jn
+        self.indian_bank = indian_bank
+        self.pdc_bank = pdc_bank
+        self.ksfe = ksfe
+        self.ksc_bank = ksc_bank
+
         self.other1 = other1
+        self.other2 = other2
+        self.other3 = other3
+
+
         self.net_salary = net_salary
 
     def __repr__(self):

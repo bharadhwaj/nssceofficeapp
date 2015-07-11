@@ -378,20 +378,55 @@ def verifyentries():
 def disbursementinput():
     period = SalaryPeriod.query.filter_by(disburse_completed=False).first()
     if request.method == 'POST':
-        app.logger.info(request.form)
+        app.logger.info(sorted(request.form))
         empid = request.form['empid']
         employee = Employee.query.get(int(empid))
+
+
         premiums_cut = request.form['premiums_cut']
-        something = request.form['something']
+        telephone = request.form['telephone']
+        tenancy_rent = request.form['tenancy_rent']
+        cs_loan = request.form['cs_loan']
+        cs_chitty = request.form['cs_chitty']
+        stamp = request.form['stamp']
+        send_off = request.form['send_off']
+        welfare_fund = request.form['welfare_fund']
+        dte_jp = request.form['dte_jp']
+        jn = request.form['jn']
+        indian_bank = request.form['indian_bank']
+        pdc_bank = request.form['pdc_bank']
+        ksfe = request.form['ksfe']
+        ksc_bank = request.form['ksc_bank']
+
         other1 = request.form['other1']
+        other2 = request.form['other2']
+        other3 = request.form['other3']
        
+        app.logger.info('All fields okay')
 
         if request.form['hasslip'] == 'True':
             slip = Disbursement.query.filter_by(employee_id = int(empid), period_id = period.id).first()
             app.logger.info('Found existing slip: %r'%slip)
             slip.premiums_cut = premiums_cut
-            slip.something = something
+
+
+            slip.telephone = telephone
+            slip.tenancy_rent = tenancy_rent
+            slip.cs_loan = cs_loan
+            slip.cs_chitty = cs_chitty
+            slip.stamp = stamp
+            slip.send_off = send_off
+            slip.welfare_fund = welfare_fund
+            slip.dte_jp = dte_jp
+            slip.jn = jn
+            slip.indian_bank = indian_bank
+            slip.pdc_bank = pdc_bank
+            slip.ksfe = ksfe
+            slip.ksc_bank = ksc_bank
+
             slip.other1 = other1
+            slip.other2 = other2
+            slip.other3 = other3
            
 
             db.session.add(slip)
@@ -399,7 +434,11 @@ def disbursementinput():
 
         else:
             sparkslip = SalarySlip.query.filter_by(period_id=period.id, employee_id=employee.id).first()
-            empslip = Disbursement(period.id, employee.id, premiums_cut, something, other1, sparkslip.net_salary)
+            empslip = Disbursement(period.id, employee.id, premiums_cut,
+                                     telephone, tenancy_rent, cs_chitty, cs_loan,
+                                     stamp, send_off, welfare_fund, dte_jp, jn, indian_bank,
+                                     pdc_bank, ksfe, ksc_bank, other3, other2, other1, sparkslip.net_salary)
+            
             empslip.premiums_cut = 0
             premiums = employee.premiums.filter(Premium.upto_year >= period.year).all()
             for premium in premiums:
@@ -448,7 +487,23 @@ def verifydisbursals():
         verified = request.form['verified']
         if verified:
             for slip in slips:
-                slip.gross_salary = slip.net_salary - slip.premiums_cut - slip.something - slip.other1
+                slip.gross_salary = slip.net_salary - (slip.premiums_cut \
+                                                    + slip.telephone \
+                                                    + slip.tenancy_rent \
+                                                    + slip.cs_loan \
+                                                    + slip.cs_chitty \
+                                                    + slip.stamp \
+                                                    + slip.send_off \
+                                                    + slip.welfare_fund \
+                                                    + slip.dte_jp \
+                                                    + slip.jn \
+                                                    + slip.indian_bank \
+                                                    + slip.pdc_bank \
+                                                    + slip.ksfe \
+                                                    + slip.ksc_bank \
+                                                    + slip.other1
+                                                    + slip.other2 \
+                                                    + slip.other3)
 
                 db.session.add(slip)
 

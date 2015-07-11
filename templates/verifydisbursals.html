@@ -21,13 +21,13 @@
   <div class="container">
 
     <div class="row">
-      <div class="col-md-10 col-md-offset-1">
+      <div class="col-md-12"  style="position: fixed; left: 0; overflow:scroll;">
       <h4>Report for: {{period.month}} / {{period.year}}</h4>
       
-      <table id="empTable" class="table table-hover table-bordered">
+      <table id="empTable" class="table table-hover table-bordered table-responsive" >
       <thead>
-      <th colspan="4"><center>Personal Details</center></th>
-      <th colspan="4"><center>Disbursements</center></th>
+      <th colspan="3"><center>Personal Details</center></th>
+      <th colspan="17"><center>Disbursements</center></th>
 
       </tr>
     
@@ -36,9 +36,22 @@
                   <th> Name </th>
                   <th >Net Salary</th>
                   <th >PREMIUMS-CUT</th>
-                  <th >SOMETHING</th>
+                  <th >TELEPHONE</th>
+                  <th >TENANCY RENT</th>
+                  <th >CS LOAN</th>
+                  <th >CS CHITTY</th>
+                  <th >STAMP</th>
+                  <th >SEND OFF</th>
+                  <th >WELFARE FUND</th>
+                  <th >DTE JP</th>
+                  <th >JN</th>
+                  <th >INDIAN BANK</th>
+                  <th >PDC BANK</th>
+                  <th >KSFE</th>
+                  <th >KSC BANK</th>
                   <th >OTHER1</th>
-
+                  <th >OTHER2</th>
+                  <th >OTHER3</th>
                   
                 </tr>
     </thead>
@@ -49,8 +62,23 @@
                 <td>{{slip.employee.name}}</td>
                 <td>{{slip.net_salary}}</td>
                 <td>{{slip.premiums_cut}}</td>
-                <td>{{slip.something}}</td>
+                <td>{{slip.telephone }}</td>
+                <td>{{slip.tenancy_rent}}</td>
+                <td>{{slip.cs_loan}}</td>
+                <td>{{slip.cs_chitty}}</td>
+                <td>{{slip.stamp}}</td>
+                <td>{{slip.send_off}}</td>
+                <td>{{slip.welfare_fund}}</td>
+                <td>{{slip.dte_jp}}</td>
+                <td>{{slip.jn}}</td>
+                <td>{{slip.indian_bank}}</td>
+                <td>{{slip.pdc_bank}}</td>
+                <td>{{slip.ksfe}}</td>
+                <td>{{slip.ksc_bank}}</td>
+
                 <td>{{slip.other1}}</td>
+                <td>{{slip.other2}}</td>
+                <td>{{slip.other3}}</td>
                 </tr>
                 {% endfor %}
   </table>
