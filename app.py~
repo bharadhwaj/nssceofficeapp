@@ -7,10 +7,15 @@ from flask_mail import Mail, Message
 from flask import copy_current_request_context #for async mail
 from flask import jsonify
 from threading import Thread
+from flask_weasyprint import HTML, render_pdf
+from xhtml2pdf import pisa
+from StringIO import StringIO
 import os
 import pytz
 import json
 import datetime
+import pdfkit
+
 
 from models import Employee, User, SalaryPeriod, SalarySlip, Disbursement, Premium
 from models import db
@@ -21,7 +26,7 @@ app.config.from_object('config')
 
 db.init_app(app)
 csrf = SeaSurf(app)
-
+mail = Mail(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
@@ -468,7 +473,15 @@ def generate(year,month):
             app.logger.info('Got period')
             sortby = request.args.get('sortby')
             app.logger.info(repr(request.args.get))
-            if sortby:
+            if not sortby:
+                slips = SalarySlip.query.filter_by(period_id=period.id).order_by(SalarySlip.employee_id)
+                disbs = Disbursement.query.filter_by(period_id=period.id).order_by(Disbursement.employee_id)
+                data = zip(slips,disbs)
+                return render_template('viewall.html', data=data, period=period, banks = app.config['BANK_TYPES'])
+
+
+
+            else:
                 app.logger.info('Sorting by: '+sortby)
 
                 if sortby == 'bank': 
@@ -512,6 +525,47 @@ def generate(year,month):
 @app.route('/test/<template>')
 def test(template):
     return render_template(template+'.html')
+
+@app.route('/generatepdf',methods=['GET','POST'])
+@login_required
+def generatepdf():
+    if request.method == 'GET':
+    	app.config.update(dict(
+        MAIL_SERVER = 'smtp.gmail.com',
+        MAIL_PORT = 465,
+        MAIL_USE_TLS = False,
+        MAIL_USE_SSL = True,
+        MAIL_ASCII_ATTACHMENTS = True,
+        MAIL_USERNAME = 'timnotifications@gmail.com',
+        MAIL_PASSWORD = 'tim is not moodle'
+    	))
+    	with app.app_context():
+    		with mail.connect() as conn:
+    			server = smtplib.SMTP(host='smtp.gmail.com', port=587)
+        		subject = "Mail with PDF"
+        		msg = Message(subject, sender = 'TIM', recipients = 'bharadhwaj10@gmail.com')
+        		html = render_template('employeereport.html')
+        		pdf = HTML(string=html).write_pdf()
+        		#pdf = create_pdf(render_template('employeereport.html'))
+        		msg.attach("file.pdf", "application/pdf", pdf)
+        		conn.send(msg)
+        
+        app.logger.info('Sent email')
+    	
+        
+    	
+        # css = ['example.css', 'example2.css']
+        # pdfkit.from_file('file.html', options=options, css=css)
+        # html = render_template('employeereport.html')
+        # return render_pdf(HTML(string=html))
+        # pdfkit.from_url('http://google.com', 'out.pdf')
+        # pdfkit.from_file('test.html', 'out.pdf')
+        # pdfkit.from_string('Hello!', 'out.pdf')
+
+def create_pdf(pdf_data):
+    pdf = StringIO()
+    pisa.CreatePDF(StringIO(pdf_data), pdf)
+    return pdf
 
 
 if __name__ == '__main__':

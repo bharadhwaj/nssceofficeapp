@@ -7,10 +7,16 @@ from flask_mail import Mail, Message
 from flask import copy_current_request_context #for async mail
 from flask import jsonify
 from threading import Thread
+from flask_weasyprint import HTML, render_pdf
+from flask.ext.mandrill import Mandrill
+from xhtml2pdf import pisa
+from StringIO import StringIO
 import os
 import pytz
 import json
 import datetime
+import pdfkit
+
 
 from models import Employee, User, SalaryPeriod, SalarySlip, Disbursement, Premium
 from models import db
@@ -21,6 +27,7 @@ app.config.from_object('config')
 
 db.init_app(app)
 csrf = SeaSurf(app)
+mail = Mail(app)
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -47,9 +54,9 @@ def index():
 		if name == 'view_report':
 			year = request.form['year']
 			month = request.form['month']
-			#sort = request.args.form['sortby']
-			#values = Employee.query.order_by().all()
-			return redirect(url_for('generate',year=year, month=month))#, values=values))	
+
+			return redirect(url_for('generate',year=year, month=month))
+
 	return render_template('index.html')
     
 @app.route('/employees')
@@ -457,7 +464,10 @@ def viewall():
     slips = SalarySlip.query.filter_by(period_id=period.id).order_by(SalarySlip.employee_id)
     disbs = Disbursement.query.filter_by(period_id=period.id).order_by(Disbursement.employee_id)
     data = zip(slips,disbs)
-    return render_template('viewall.html', data=data, period=period,  banks = app.config['BANK_TYPES'])
+
+    return render_template('viewall.html', data=data, period=period, banks = app.config['BANK_TYPES'])
+
+
 
 @app.route('/generate/<year>/<month>',methods=['GET','POST'])
 @login_required
@@ -500,7 +510,7 @@ def generate(year,month):
                             period=period, banks = app.config['BANK_TYPES'],
                             bank_name = bank_name, bank_total = bank_total)
                 elif sortby == 'scheme':
-                    scheme = request.args.get('scheme')
+                    scheme = request.args.get('scheme' )
                     app.logger.info('Sorting by scheme: ' + scheme)
                     if scheme:
                         app.logger.info('Sorting by scheme: ' + scheme)
@@ -520,11 +530,48 @@ def generate(year,month):
             flash('Report not generated for this month','warning')
             return render_template('index.html')
 
+    if request.method == 'POST':
+        name = request.form['name']
+        if name == 'personal':
+            employee = Employee.query.all()
+            app.logger.info('Queried all employees')
+            for emp in employee:
+                send_email("Pay Slip",
+                    'TIM',
+                    [emp.email],
+                    'Check in attachments',
+                    render_template('employeereport.html',employee = emp)
+                    )
+                app.logger.info('Mail sent')
+
+        return redirect(url_for('index'))
+
+
+def async(f):
+    def wrapper(*args, **kwargs):
+        thr = Thread(target = f, args = args, kwargs = kwargs)
+        thr.start()
+    return wrapper
+
+@login_required
+@async
+def send_async_email(subject,sender,recipients,text_body,attachments):
+    with app.app_context():
+        subject = subject
+        msg = Message(subject, sender = sender, recipients = recipients)
+        css = ['static/css/handsontable.full.css', 'static/css/bootstrap.css']
+        pdf = pdfkit.from_string(attachments, False, css = css)
+        msg.attach("file.pdf", "application/pdf", pdf)
+        mail.send(msg)
+    app.logger.info('Sent email')
+
+def send_email(subject, sender, recipients, text_body, attachments):
+    send_async_email(subject,sender,recipients,text_body, attachments)
+
 
 @app.route('/test/<template>')
 def test(template):
     return render_template(template+'.html')
-
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0",port=5000)
