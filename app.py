@@ -49,7 +49,7 @@ def index():
 			month = request.form['month']
 			#sort = request.args.form['sortby']
 			#values = Employee.query.order_by().all()
-			#return redirect(url_for('generate',year=year, month=month))#, values=values))	
+			return redirect(url_for('generate',year=year, month=month))#, values=values))	
 	return render_template('index.html')
     
 @app.route('/employees')
