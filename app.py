@@ -457,7 +457,7 @@ def viewall():
     slips = SalarySlip.query.filter_by(period_id=period.id).order_by(SalarySlip.employee_id)
     disbs = Disbursement.query.filter_by(period_id=period.id).order_by(Disbursement.employee_id)
     data = zip(slips,disbs)
-    return render_template('viewall.html', data=data, period=period)
+    return render_template('viewall.html', data=data, period=period,  banks = app.config['BANK_TYPES'])
 
 @app.route('/generate/<year>/<month>',methods=['GET','POST'])
 @login_required
