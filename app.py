@@ -585,8 +585,18 @@ def generate(year,month):
             for s in slips:
                 employees.append(s.employee)
             disbs = Disbursement.query.filter_by(period_id=period.id).order_by(Disbursement.employee_id)
-            data = zip(slips,disbs, employees)
+            data = zip(slips, disbs, employees)
             generate_salary_slips(data, period)
+        else:
+            period = SalaryPeriod.query.filter_by(year = year, month=month).first()
+            employees = Employee.query.filter_by(bank_name = name).all()
+            disbs = Disbursement.query.filter_by(period_id=period.id).order_by(Disbursement.employee_id)
+            
+            data = zip(disbs, employees)
+            app.logger.info(employees)
+            app.logger.info(disbs)
+            bank_total = sum([d.gross_salary for d in disbs])
+            generate_bank_slips(data, period, name, bank_total)
 
             # employee = Employee.query.all()
             # app.logger.info('Queried all employees')
@@ -610,11 +620,12 @@ def async(f):
 
 
 @async
-def send_async_email(subject,sender,recipients,text_body,attachment):
+def send_async_email(subject,sender,recipients,text_body,attachment,filename):
     with app.app_context():
         subject = subject
         msg = Message(subject, sender = sender, recipients = recipients)
-        msg.attach("slip.pdf", "application/pdf", open(attachment,'rb').read())
+        msg.body = text_body
+        msg.attach(filename, "application/pdf", open(attachment,'rb').read())
         mail.send(msg)
     app.logger.info('Sent email')
 
@@ -639,20 +650,36 @@ def generate_salary_slips(data, period):
             slip_html = render_template('employeereport.html', slip=slip, disb =disb, employee=employee)
             pdfkit.from_string(slip_html, dirpath+str(employee.empid)+'.pdf', css = css)
             app.logger.info('Made pdf for employee %r' %employee.empid)
-            send_async_email("Pay Slip", 'TIM', [employee.email], 'Check in attachments',dirpath+str(employee.empid)+'.pdf')
+            subject = "Pay Slip for "+str(period.month)+'/' + str(period.year)
+            filename = employee.name + ' - '+str(period.month)+'/'+ str(period.year)+'.pdf'
+            body = 'Hi '+employee.name+', \n We have attached your salary slip of '+ ' - '+str(period.month)+'/'+ str(period.year)+'\n Please find it in attachments. \n Thank you.'
+            send_async_email(subject, 'TIM', [employee.email], body, dirpath+str(employee.empid)+'.pdf',filename)
                     
-
-
-
-
-
-
+@async
+def generate_bank_slips(data, period, bank_name, bank_total):
+    with app.app_context():        
+        dirpath = 'slips/%d/%s/' %(period.year,bank_name)
+        if not os.path.isdir(dirpath):
+            try:
+                os.makedirs(dirpath)
+            except:
+                app.logger.info("Couldn't create directory")
+                return "Couldn't create directory"
+        admin = ['bharadhwaj10@gmail.com','shafeeq94@gmail.com']
+        app.logger.info('Making dir successful')
+        css = ['static/css/bootstrap.css','static/css/reports.css','static/css/bootswatch.css','static/css/styles.css']
+        bank_slip_html = render_template('bankreport.html',data=data, period=period, bank_name = bank_name, bank_total = bank_total)
+        pdfkit.from_string(bank_slip_html, dirpath+bank_name+'.pdf', css = css)
+        app.logger.info('Made pdf for Bank %r' %bank_name)
+        subject = bank_name + " Bank Slip for "+str(period.month)+'/'+str(period.year)
+        filename = bank_name + ' - '+str(period.month)+'/'+str(period.year)+'.pdf'
+        body = 'Hi, \n We have attached the '+ bank_name +'\'s bank slip of '+ ' - '+str(period.month)+'/'+ str(period.year)+'\n Please find it in attachments. \n Thank you.'
+        send_async_email(subject, 'TIM', admin, body, dirpath+bank_name+'.pdf',filename)
 
 
 @app.route('/test/<template>')
 def test(template):
-    employee = Employee.query.all()
-    return render_template(template+'.html', employee = employee)
+    return render_template(template+'.html')
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0",port=5000)

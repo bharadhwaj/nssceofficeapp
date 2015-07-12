@@ -89,7 +89,7 @@
              <td>  
               <form action="" method="post">
                 <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
-                <input type="hidden" name="name" value="personal">
+                <input type="hidden" name="name" value="{{bank_name}}">
                 <input type="submit" class="btn btn-success btn-lg btn-block" value="Generate {{bank_name}} Bank Slip">
               </form>
             </td>
