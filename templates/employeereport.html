@@ -2,14 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="">
-  <meta name="author" content="">
 
-  <title> </title>
+  <title> Salary slip</title>
 
-  <!-- <link type = "text/css" href="static/css/bootstrap.css" rel="stylesheet" --> 
   
   
 </head>
@@ -24,6 +19,7 @@
           <h2> <small> NAME: </small> {{employee.name}} </h2>
           <h4> <small> Designation: </small> {{employee.designation}}</h4>
           <h4> <small> Department: </small> {{employee.department}} </h4>
+          <h4> <small> Scheme: </small> {{employee.scheme}} </h4>
           <h4> <small> Bank: </small> {{employee.bank_name}} </h4>
           <h4> <small> Account Number: </small> {{employee.accno}} </h4>
 
@@ -43,7 +39,6 @@
           <td>Basic Pay</td>
           <td>{{employee.basic_pay}}</td>
         </tr>
-        {% for slip in data %}
         <tr>
           <td>2</td>
           <td>AGP</td>
@@ -122,10 +117,103 @@
         </tr>
         <tr>
         <th colspan="2"><center>Net Salary</center></th> 
-        <tr>{{slip.net_salary}}</tr>
+        <th>{{disb.net_salary}}</th>
         </tr>
         
-        {% endfor %}
+        <tr>
+        <th colspan="3"><center>Disbursals</center></th> 
+        </tr>
+
+        <tr>
+          <td>1</td>
+          <td>Premiums Cut</td>
+          <td>{{disb.premiums_cut}}</td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td>Telephone</td>
+          <td>{{disb.telephone}}</td>
+        </tr>
+        <tr>
+          <td>3</td>
+          <td>Tenancy Rent</td>
+          <td>{{disb.tenancy_rent}}</td>
+        </tr>
+        <tr>
+          <td>5</td>
+          <td>CS Loan</td>
+          <td>{{disb.cs_loan}}</td>
+        </tr>
+        <tr>
+          <td>5</td>
+          <td>CS Chitty</td>
+          <td>{{disb.cs_chitty}}</td>
+        </tr>
+        <tr>
+          <td>6</td>
+          <td>Stamp</td>
+          <td>{{disb.stamp}}</td>
+        </tr>
+        <tr>
+          <td>7</td>
+          <td>Send off</td>
+          <td>{{disb.send_off}}</td>
+        </tr>
+        <tr>
+          <td>8</td>
+          <td>Welfare Fund</td>
+          <td>{{disb.welfare_fund}}</td>
+        </tr>
+        <tr>
+          <td>9</td>
+          <td>DTE JP</td>
+          <td>{{disb.dte_jp}}</td>
+        </tr>
+        <tr>
+          <td>10</td>
+          <td>JN</td>
+          <td>{{disb.jn}}</td>
+        </tr>
+        <tr>
+          <td>11</td>
+          <td>Indian Bank</td>
+          <td>{{disb.indian_bank}}</td>
+        </tr>
+        <tr>
+          <td>12</td>
+          <td>PDC Bank</td>
+          <td>{{disb.pdc_bank}}</td>
+        </tr>
+        <tr>
+          <td>13</td>
+          <td>KSFE</td>
+          <td>{{disb.ksfe}}</td>
+        </tr>
+        <tr>
+          <td>14</td>
+          <td>KSC Bank</td>
+          <td>{{disb.ksc_bank}}</td>
+        </tr>
+        <tr>
+          <td>15</td>
+          <td>Other1</td>
+          <td>{{disb.other1}}</td>
+        </tr>
+        <tr>
+          <td>16</td>
+          <td>Other2</td>
+          <td>{{disb.other2}}</td>
+        </tr>
+        <tr>
+          <td>17</td>
+          <td>Other3</td>
+          <td>{{disb.other3}}</td>
+        </tr>
+        <tr>
+        <th colspan="2"><center>Net Payable</center></th> 
+        <th>{{disb.gross_salary}}</th>
+        </tr>
+
 
         </table>
         
