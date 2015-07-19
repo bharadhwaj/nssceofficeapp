@@ -8,6 +8,7 @@ from flask import copy_current_request_context #for async mail
 from flask import jsonify
 from threading import Thread
 from flask_weasyprint import HTML, render_pdf
+from flask.ext.mandrill import Mandrill
 from xhtml2pdf import pisa
 from StringIO import StringIO
 import os
@@ -27,6 +28,7 @@ app.config.from_object('config')
 db.init_app(app)
 csrf = SeaSurf(app)
 mail = Mail(app)
+
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
@@ -52,9 +54,9 @@ def index():
 		if name == 'view_report':
 			year = request.form['year']
 			month = request.form['month']
-			#sort = request.args.form['sortby']
-			#values = Employee.query.order_by().all()
-			#return redirect(url_for('generate',year=year, month=month))#, values=values))	
+
+			return redirect(url_for('generate',year=year, month=month))
+
 	return render_template('index.html')
     
 @app.route('/employees')
@@ -121,6 +123,8 @@ def editemp(empid):
             accno = request.form['accno']
             bprs = request.form['bp-rs']
             bpps = request.form['bp-ps']
+            if not bpps:
+                    bpps = str(00)
             bank = request.form['bank']
             pan = request.form['pan']
             email = request.form['email']
@@ -376,20 +380,55 @@ def verifyentries():
 def disbursementinput():
     period = SalaryPeriod.query.filter_by(disburse_completed=False).first()
     if request.method == 'POST':
-        app.logger.info(request.form)
+        app.logger.info(sorted(request.form))
         empid = request.form['empid']
         employee = Employee.query.get(int(empid))
+
+
         premiums_cut = request.form['premiums_cut']
-        something = request.form['something']
+        telephone = request.form['telephone']
+        tenancy_rent = request.form['tenancy_rent']
+        cs_loan = request.form['cs_loan']
+        cs_chitty = request.form['cs_chitty']
+        stamp = request.form['stamp']
+        send_off = request.form['send_off']
+        welfare_fund = request.form['welfare_fund']
+        dte_jp = request.form['dte_jp']
+        jn = request.form['jn']
+        indian_bank = request.form['indian_bank']
+        pdc_bank = request.form['pdc_bank']
+        ksfe = request.form['ksfe']
+        ksc_bank = request.form['ksc_bank']
+
         other1 = request.form['other1']
+        other2 = request.form['other2']
+        other3 = request.form['other3']
        
+        app.logger.info('All fields okay')
 
         if request.form['hasslip'] == 'True':
             slip = Disbursement.query.filter_by(employee_id = int(empid), period_id = period.id).first()
             app.logger.info('Found existing slip: %r'%slip)
             slip.premiums_cut = premiums_cut
-            slip.something = something
+
+
+            slip.telephone = telephone
+            slip.tenancy_rent = tenancy_rent
+            slip.cs_loan = cs_loan
+            slip.cs_chitty = cs_chitty
+            slip.stamp = stamp
+            slip.send_off = send_off
+            slip.welfare_fund = welfare_fund
+            slip.dte_jp = dte_jp
+            slip.jn = jn
+            slip.indian_bank = indian_bank
+            slip.pdc_bank = pdc_bank
+            slip.ksfe = ksfe
+            slip.ksc_bank = ksc_bank
+
             slip.other1 = other1
+            slip.other2 = other2
+            slip.other3 = other3
            
 
             db.session.add(slip)
@@ -397,7 +436,11 @@ def disbursementinput():
 
         else:
             sparkslip = SalarySlip.query.filter_by(period_id=period.id, employee_id=employee.id).first()
-            empslip = Disbursement(period.id, employee.id, premiums_cut, something, other1, sparkslip.net_salary)
+            empslip = Disbursement(period.id, employee.id, premiums_cut,
+                                     telephone, tenancy_rent, cs_chitty, cs_loan,
+                                     stamp, send_off, welfare_fund, dte_jp, jn, indian_bank,
+                                     pdc_bank, ksfe, ksc_bank, other3, other2, other1, sparkslip.net_salary)
+            
             empslip.premiums_cut = 0
             premiums = employee.premiums.filter(Premium.upto_year >= period.year).all()
             for premium in premiums:
@@ -446,23 +489,31 @@ def verifydisbursals():
         verified = request.form['verified']
         if verified:
             for slip in slips:
-                slip.gross_salary = slip.net_salary - slip.premiums_cut - slip.something - slip.other1
+                slip.gross_salary = slip.net_salary - (slip.premiums_cut \
+                                                    + slip.telephone \
+                                                    + slip.tenancy_rent \
+                                                    + slip.cs_loan \
+                                                    + slip.cs_chitty \
+                                                    + slip.stamp \
+                                                    + slip.send_off \
+                                                    + slip.welfare_fund \
+                                                    + slip.dte_jp \
+                                                    + slip.jn \
+                                                    + slip.indian_bank \
+                                                    + slip.pdc_bank \
+                                                    + slip.ksfe \
+                                                    + slip.ksc_bank \
+                                                    + slip.other1
+                                                    + slip.other2 \
+                                                    + slip.other3)
 
                 db.session.add(slip)
 
             period.disburse_completed = True;
             db.session.add(period)
             db.session.commit()
-            return redirect(url_for('viewall'))
+            return redirect(url_for('generate', year = period.year, month = period.month))
 
-@app.route('/viewall')
-@login_required
-def viewall():
-    period = SalaryPeriod.query.order_by(SalaryPeriod.id.desc()).first()
-    slips = SalarySlip.query.filter_by(period_id=period.id).order_by(SalarySlip.employee_id)
-    disbs = Disbursement.query.filter_by(period_id=period.id).order_by(Disbursement.employee_id)
-    data = zip(slips,disbs)
-    return render_template('viewall.html', data=data, period=period)
 
 @app.route('/generate/<year>/<month>',methods=['GET','POST'])
 @login_required
@@ -478,8 +529,6 @@ def generate(year,month):
                 disbs = Disbursement.query.filter_by(period_id=period.id).order_by(Disbursement.employee_id)
                 data = zip(slips,disbs)
                 return render_template('viewall.html', data=data, period=period, banks = app.config['BANK_TYPES'])
-
-
 
             else:
                 app.logger.info('Sorting by: '+sortby)
@@ -499,9 +548,14 @@ def generate(year,month):
                         app.logger.info(slips)
                         app.logger.info(disbs)
                         data = zip(slips,disbs)
-                        return render_template('viewall.html',data=data, period=period, banks = app.config['BANK_TYPES'])
+
+                        bank_name = bank
+                        bank_total = sum([d.gross_salary for d in disbs])
+                        return render_template('viewall-bank.html',data=data, 
+                            period=period, banks = app.config['BANK_TYPES'],
+                            bank_name = bank_name, bank_total = bank_total)
                 elif sortby == 'scheme':
-                    scheme = request.args.get('scheme')
+                    scheme = request.args.get('scheme' )
                     app.logger.info('Sorting by scheme: ' + scheme)
                     if scheme:
                         app.logger.info('Sorting by scheme: ' + scheme)
@@ -514,6 +568,7 @@ def generate(year,month):
                         app.logger.info(slips)
                         app.logger.info(disbs)
                         data = zip(slips,disbs)
+                        
                         return render_template('viewall.html',data=data, period=period, banks = app.config['BANK_TYPES'])
 
             #return 'ok'
@@ -521,52 +576,110 @@ def generate(year,month):
             flash('Report not generated for this month','warning')
             return render_template('index.html')
 
+    elif request.method == 'POST':
+        name = request.form['name']
+        if name == 'personal':
+            period = SalaryPeriod.query.filter_by(year = year, month=month).first()
+            slips = SalarySlip.query.filter_by(period_id=period.id).order_by(SalarySlip.employee_id)
+            employees = [] # since we cannot access slip.employee in thread2 due to db session issues
+            for s in slips:
+                employees.append(s.employee)
+            disbs = Disbursement.query.filter_by(period_id=period.id).order_by(Disbursement.employee_id)
+            data = zip(slips, disbs, employees)
+            generate_salary_slips(data, period)
+        else:
+            period = SalaryPeriod.query.filter_by(year = year, month=month).first()
+            employees = Employee.query.filter_by(bank_name = name).all()
+            disbs = Disbursement.query.filter_by(period_id=period.id).order_by(Disbursement.employee_id)
+            
+            data = zip(disbs, employees)
+            app.logger.info(employees)
+            app.logger.info(disbs)
+            bank_total = sum([d.gross_salary for d in disbs])
+            generate_bank_slips(data, period, name, bank_total)
+
+            # employee = Employee.query.all()
+            # app.logger.info('Queried all employees')
+            # for emp in employee:
+            #     send_email("Pay Slip",
+            #         'TIM',
+            #         [emp.email],
+            #         'Check in attachments',
+            #         render_template('employeereport.html',employee = emp, data = dataglobal)
+            #         )
+            #     app.logger.info('Mail sent')
+
+        return redirect(url_for('index'))
+
+
+def async(f):
+    def wrapper(*args, **kwargs):
+        thr = Thread(target = f, args = args, kwargs = kwargs)
+        thr.start()
+    return wrapper
+
+
+@async
+def send_async_email(subject,sender,recipients,text_body,attachment,filename):
+    with app.app_context():
+        subject = subject
+        msg = Message(subject, sender = sender, recipients = recipients)
+        msg.body = text_body
+        msg.attach(filename, "application/pdf", open(attachment,'rb').read())
+        mail.send(msg)
+    app.logger.info('Sent email')
+
+def send_email(subject, sender, recipients, text_body, attachments):
+    send_async_email(subject,sender,recipients,text_body, attachments)
+
+
+@async
+def generate_salary_slips(data, period):
+    with app.app_context():        
+        dirpath = 'slips/%d/%d/' %(period.year,period.month)
+        if not os.path.isdir(dirpath):
+            try:
+                os.makedirs(dirpath)
+            except:
+                app.logger.info("Couldn't create directory")
+                return "Couldn't create directory"
+
+        app.logger.info('Making dir successful')
+        css = ['static/css/bootstrap.css']
+        for slip,disb,employee in data:
+            slip_html = render_template('employeereport.html', slip=slip, disb =disb, employee=employee)
+            pdfkit.from_string(slip_html, dirpath+str(employee.empid)+'.pdf', css = css)
+            app.logger.info('Made pdf for employee %r' %employee.empid)
+            subject = "Pay Slip for "+str(period.month)+'/' + str(period.year)
+            filename = employee.name + ' - '+str(period.month)+'/'+ str(period.year)+'.pdf'
+            body = 'Hi '+employee.name+', \n We have attached your salary slip of '+ ' - '+str(period.month)+'/'+ str(period.year)+'\n Please find it in attachments. \n Thank you.'
+            send_async_email(subject, 'TIM', [employee.email], body, dirpath+str(employee.empid)+'.pdf',filename)
+                    
+@async
+def generate_bank_slips(data, period, bank_name, bank_total):
+    with app.app_context():        
+        dirpath = 'slips/%d/%s/' %(period.year,bank_name)
+        if not os.path.isdir(dirpath):
+            try:
+                os.makedirs(dirpath)
+            except:
+                app.logger.info("Couldn't create directory")
+                return "Couldn't create directory"
+        admin = ['bharadhwaj10@gmail.com','shafeeq94@gmail.com']
+        app.logger.info('Making dir successful')
+        css = ['static/css/bootstrap.css','static/css/reports.css','static/css/bootswatch.css','static/css/styles.css']
+        bank_slip_html = render_template('bankreport.html',data=data, period=period, bank_name = bank_name, bank_total = bank_total)
+        pdfkit.from_string(bank_slip_html, dirpath+bank_name+'-'+str(period.month)+'-'+str(period.year)+ '.pdf', css = css)
+        app.logger.info('Made pdf for Bank %r' %bank_name)
+        subject = bank_name + " Bank Slip for "+str(period.month)+'/'+str(period.year)
+        filename = bank_name + ' - '+str(period.month)+'/'+str(period.year)+'.pdf'
+        body = 'Hi, \n We have attached the '+ bank_name +'\'s bank slip of '+ ' - '+str(period.month)+'/'+ str(period.year)+'\n Please find it in attachments. \n Thank you.'
+        send_async_email(subject, 'TIM', admin, body, dirpath+bank_name+'.pdf',filename)
+
 
 @app.route('/test/<template>')
 def test(template):
     return render_template(template+'.html')
-
-@app.route('/generatepdf',methods=['GET','POST'])
-@login_required
-def generatepdf():
-    if request.method == 'GET':
-    	app.config.update(dict(
-        MAIL_SERVER = 'smtp.gmail.com',
-        MAIL_PORT = 465,
-        MAIL_USE_TLS = False,
-        MAIL_USE_SSL = True,
-        MAIL_ASCII_ATTACHMENTS = True,
-        MAIL_USERNAME = 'timnotifications@gmail.com',
-        MAIL_PASSWORD = 'tim is not moodle'
-    	))
-    	with app.app_context():
-    		with mail.connect() as conn:
-    			server = smtplib.SMTP(host='smtp.gmail.com', port=587)
-        		subject = "Mail with PDF"
-        		msg = Message(subject, sender = 'TIM', recipients = 'bharadhwaj10@gmail.com')
-        		html = render_template('employeereport.html')
-        		pdf = HTML(string=html).write_pdf()
-        		#pdf = create_pdf(render_template('employeereport.html'))
-        		msg.attach("file.pdf", "application/pdf", pdf)
-        		conn.send(msg)
-        
-        app.logger.info('Sent email')
-    	
-        
-    	
-        # css = ['example.css', 'example2.css']
-        # pdfkit.from_file('file.html', options=options, css=css)
-        # html = render_template('employeereport.html')
-        # return render_pdf(HTML(string=html))
-        # pdfkit.from_url('http://google.com', 'out.pdf')
-        # pdfkit.from_file('test.html', 'out.pdf')
-        # pdfkit.from_string('Hello!', 'out.pdf')
-
-def create_pdf(pdf_data):
-    pdf = StringIO()
-    pisa.CreatePDF(StringIO(pdf_data), pdf)
-    return pdf
-
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0",port=5000)

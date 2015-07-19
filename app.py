@@ -669,7 +669,7 @@ def generate_bank_slips(data, period, bank_name, bank_total):
         app.logger.info('Making dir successful')
         css = ['static/css/bootstrap.css','static/css/reports.css','static/css/bootswatch.css','static/css/styles.css']
         bank_slip_html = render_template('bankreport.html',data=data, period=period, bank_name = bank_name, bank_total = bank_total)
-        pdfkit.from_string(bank_slip_html, dirpath+bank_name+'.pdf', css = css)
+        pdfkit.from_string(bank_slip_html, dirpath+bank_name+'-'+str(period.month)+'-'+str(period.year)+ '.pdf', css = css)
         app.logger.info('Made pdf for Bank %r' %bank_name)
         subject = bank_name + " Bank Slip for "+str(period.month)+'/'+str(period.year)
         filename = bank_name + ' - '+str(period.month)+'/'+str(period.year)+'.pdf'
