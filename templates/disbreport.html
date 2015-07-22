@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <title>Prepare New Report</title>
+
+ 
+</head>
+
+<body style="padding-top: 70px;">
+
+        <div class="col-md-10 col-md-offset-2 main" >
+
+              <h4>Final Report for: {{period.month}} / {{period.year}}</h4>
+              <h4>Disbursement: {{disbs.get(disb_name)}} </h4>
+          
+          <br/>
+
+          <table id="empTable" class="table table-hover table-bordered table-responsive">
+            <thead>
+
+            <tr>
+              <th>ID</th>
+              <th> NAME </th>
+              <th> Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for disb, emp in data %}
+            <tr>
+
+              <td>{{emp.empid}}</td>
+              <td>{{emp.name}}</td>
+              <td>{{disb.__dict__[disb_name]}}</td>
+            </tr>
+            {% endfor %}
+            <tr class="success">
+            <td colspan="2">TOTAL</td>
+            <td>{{disb_total}}</td>
+            </tr>
+            </tbody>
+          </table>
+  </body>
+  </html>

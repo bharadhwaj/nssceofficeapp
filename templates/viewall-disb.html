@@ -66,7 +66,6 @@
             <ul class="nav nav-stacked nav-pills">
               <li role="presentation"><a href="{{url_for('generate',year=period.year,month = period.month)}}" class="list-group-item">View All</a></li>
             </ul>
-            
             <h5>Bank</h5>
             <ul class="nav nav-stacked nav-pills">
               {% for code,bank in banks.items() %}
@@ -80,6 +79,7 @@
               <li role="presentation"><a href="{{url_for('generate',year=period.year,month = period.month, sortby='disbursement', disbursement=code)}}" class="list-group-item">{{disb}}</a></li>
                {% endfor %}
             </ul>
+
             <!-- <div class="list-group">
               {% for code,bank in banks.items() %}
               <a href="{{url_for('generate',year=period.year,month = period.month, sortby='bank', bank=code)}}" class="list-group-item">{{bank}}</a>
@@ -96,7 +96,8 @@
              <td>  
               <form action="" method="post">
                 <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
-                <input type="hidden" name="name" value="{{bank_name}}">
+                <input type="hidden" name="name" value="disbursement">
+                <input type="hidden" name="disb_name" value="{{disb_name}}">
                 <input type="submit" class="btn btn-success btn-lg btn-block" value="Generate  {{disbs.get(disb_name)}} Slip">
               </form>
             </td>

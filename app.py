@@ -593,16 +593,18 @@ def generate(year,month):
             disbs = Disbursement.query.filter_by(period_id=period.id).order_by(Disbursement.employee_id)
             data = zip(slips, disbs, employees)
             generate_salary_slips(data, period)
-        else:
+        elif name == 'bank':
+            bank_name = request.form['bank_name']
             period = SalaryPeriod.query.filter_by(year = year, month=month).first()
-            employees = Employee.query.filter_by(bank_name = name).all()
+            employees = Employee.query.filter_by(bank_name = bank_name).all()
             disbs = Disbursement.query.filter_by(period_id=period.id).order_by(Disbursement.employee_id)
             
             data = zip(disbs, employees)
             app.logger.info(employees)
             app.logger.info(disbs)
             bank_total = sum([d.gross_salary for d in disbs])
-            generate_bank_slips(data, period, name, bank_total)
+            
+            generate_bank_slips(data, period, bank_name, bank_total)
 
             # employee = Employee.query.all()
             # app.logger.info('Queried all employees')
@@ -614,7 +616,18 @@ def generate(year,month):
             #         render_template('employeereport.html',employee = emp, data = dataglobal)
             #         )
             #     app.logger.info('Mail sent')
-
+        elif name == 'disbursement':
+            disb_name = request.form['disb_name']
+            period = SalaryPeriod.query.filter_by(year = year, month=month).first()
+            employees = Employee.query.all()
+            disbs = Disbursement.query.filter_by(period_id=period.id).order_by(Disbursement.employee_id)
+            
+            data = zip(disbs, employees)
+            app.logger.info(employees)
+            app.logger.info(disbs)
+            disb_total = sum([d.__dict__[disb_name] for d in disbs])
+            disb = app.config['DISB_TYPES']
+            generate_disb_slips(data, period, disb_name, disb_total, disb)
         return redirect(url_for('index'))
 
 
@@ -682,6 +695,26 @@ def generate_bank_slips(data, period, bank_name, bank_total):
         body = 'Hi, \n We have attached the '+ bank_name +'\'s bank slip of '+ ' - '+str(period.month)+'/'+ str(period.year)+'\n Please find it in attachments. \n Thank you.'
         send_async_email(subject, 'TIM', admin, body, dirpath+bank_name+'.pdf',filename)
 
+@async
+def generate_disb_slips(data, period, disb_name, disb_total, disb):
+    with app.app_context():        
+        dirpath = 'slips/%d/%s/' %(period.year,disb.get(disb_name))
+        if not os.path.isdir(dirpath):
+            try:
+                os.makedirs(dirpath)
+            except:
+                app.logger.info("Couldn't create directory")
+                return "Couldn't create directory"
+        admin = ['bharadhwaj10@gmail.com','shafeeq94@gmail.com']
+        app.logger.info('Making dir successful')
+        css = ['static/css/bootstrap.css','static/css/reports.css','static/css/bootswatch.css','static/css/styles.css']
+        disb_slip_html = render_template('disbreport.html',data=data, disbs = disb, period=period, disb_name = disb_name, disb_total = disb_total)
+        pdfkit.from_string(disb_slip_html, dirpath+disb.get(disb_name)+'-'+str(period.month)+'-'+str(period.year)+ '.pdf', css = css)
+        app.logger.info('Made pdf for Disbursement entry:  %r' %disb_name)
+        subject = " Cuttings of "+ disb.get(disb_name) +" for "+str(period.month)+'/'+str(period.year)
+        filename = disb.get(disb_name) + ' - '+str(period.month)+'/'+str(period.year)+'.pdf'
+        body = 'Hi, \n We have attached the disbursement cutting of '+ disb.get(disb_name) +'\'s of '+ ' - '+str(period.month)+'/'+ str(period.year)+'\n Please find it in attachments. \n Thank you.'
+        send_async_email(subject, 'TIM', admin, body, dirpath+disb.get(disb_name)+'-'+str(period.month)+'-'+str(period.year)+ '.pdf',filename)
 
 @app.route('/test/<template>')
 def test(template):
