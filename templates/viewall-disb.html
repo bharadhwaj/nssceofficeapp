@@ -91,13 +91,13 @@
           <tr>
             <td class="col-md-10" >
               <h4>Final Report for: {{period.month}} / {{period.year}}</h4>
-              <h4>Bank: {{bank_name}} </h4>
+              <h4>Disbursement: {{disbs.get(disb_name)}} </h4>
             </td>
              <td>  
               <form action="" method="post">
                 <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
                 <input type="hidden" name="name" value="{{bank_name}}">
-                <input type="submit" class="btn btn-success btn-lg btn-block" value="Generate {{bank_name}} Bank Slip">
+                <input type="submit" class="btn btn-success btn-lg btn-block" value="Generate  {{disbs.get(disb_name)}} Slip">
               </form>
             </td>
           </tr>
@@ -111,8 +111,7 @@
             <tr>
               <th>ID</th>
               <th> NAME </th>
-              <th> A/C NO. </th>
-              <th>NET PAYABLE</th>
+              <th> Amount</th>
             </tr>
           </thead>
           <tbody>
@@ -121,13 +120,12 @@
 
               <td>{{slip.employee.empid}}</td>
               <td>{{slip.employee.name}}</td>
-              <td>{{slip.employee.accno}}</td>
-              <td>{{disb.gross_salary}}</td>
+              <td>{{disb.__dict__[disb_name]}}</td>
             </tr>
             {% endfor %}
             <tr class="success">
-            <td colspan="3">TOTAL</td>
-            <td>{{bank_total}}</td>
+            <td colspan="2">TOTAL</td>
+            <td>{{disb_total}}</td>
             </tr>
             </tbody>
           </table>

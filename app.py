@@ -528,7 +528,8 @@ def generate(year,month):
                 slips = SalarySlip.query.filter_by(period_id=period.id).order_by(SalarySlip.employee_id)
                 disbs = Disbursement.query.filter_by(period_id=period.id).order_by(Disbursement.employee_id)
                 data = zip(slips,disbs)
-                return render_template('viewall.html', data=data, period=period, banks = app.config['BANK_TYPES'])
+                return render_template('viewall.html', data=data, period=period, 
+                    banks = app.config['BANK_TYPES'],disbs = app.config['DISB_TYPES'])
 
             else:
                 app.logger.info('Sorting by: '+sortby)
@@ -553,13 +554,16 @@ def generate(year,month):
                         bank_total = sum([d.gross_salary for d in disbs])
                         return render_template('viewall-bank.html',data=data, 
                             period=period, banks = app.config['BANK_TYPES'],
+                            disbs = app.config['DISB_TYPES'],
                             bank_name = bank_name, bank_total = bank_total)
-                elif sortby == 'scheme':
-                    scheme = request.args.get('scheme' )
-                    app.logger.info('Sorting by scheme: ' + scheme)
-                    if scheme:
-                        app.logger.info('Sorting by scheme: ' + scheme)
-                        employees = Employee.query.filter_by(scheme = scheme).all()
+                elif sortby == 'disbursement':
+                    disbursement = request.args.get('disbursement')
+                    app.logger.info(repr(request.args.get))
+                    if disbursement:
+
+                        app.logger.info('Got disbursement')
+                        app.logger.info('Sorting by disbursement: ' + disbursement)
+                        employees = Employee.query.all()
                         slips  = []
                         disbs  = []
                         for e in employees:
@@ -568,10 +572,12 @@ def generate(year,month):
                         app.logger.info(slips)
                         app.logger.info(disbs)
                         data = zip(slips,disbs)
-                        
-                        return render_template('viewall.html',data=data, period=period, banks = app.config['BANK_TYPES'])
 
-            #return 'ok'
+                        disb_total = sum([d.__dict__[disbursement] for d in disbs])
+                        return render_template('viewall-disb.html',data=data, 
+                            period=period, banks = app.config['BANK_TYPES'],
+                            disbs = app.config['DISB_TYPES'],
+                            disb_name = disbursement, disb_total = disb_total)
         else:
             flash('Report not generated for this month','warning')
             return render_template('index.html')

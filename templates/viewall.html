@@ -72,6 +72,12 @@
               <li role="presentation"><a href="{{url_for('generate',year=period.year,month = period.month, sortby='bank', bank=code)}}" class="list-group-item">{{bank}}</a></li>
                {% endfor %}
             </ul>
+            <h5>Disbursements</h5>
+            <ul class="nav nav-stacked nav-pills">
+              {% for code, disb in disbs.items() %}
+              <li role="presentation"><a href="{{url_for('generate',year=period.year,month = period.month, sortby='disbursement', disbursement=code)}}" class="list-group-item">{{disb}}</a></li>
+               {% endfor %}
+            </ul>
         </div>
         <div class="col-md-10 col-md-offset-2 main" >
         <table>
