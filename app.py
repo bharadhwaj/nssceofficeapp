@@ -693,7 +693,7 @@ def generate_bank_slips(data, period, bank_name, bank_total):
         subject = bank_name + " Bank Slip for "+str(period.month)+'/'+str(period.year)
         filename = bank_name + ' - '+str(period.month)+'/'+str(period.year)+'.pdf'
         body = 'Hi, \n We have attached the '+ bank_name +'\'s bank slip of '+ ' - '+str(period.month)+'/'+ str(period.year)+'\n Please find it in attachments. \n Thank you.'
-        send_async_email(subject, 'TIM', admin, body, dirpath+bank_name+'.pdf',filename)
+        send_async_email(subject, 'TIM', admin, body, dirpath+bank_name+'-'+str(period.month)+'-'+str(period.year)+ '.pdf',filename)
 
 @async
 def generate_disb_slips(data, period, disb_name, disb_total, disb):
