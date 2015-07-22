@@ -647,7 +647,7 @@ def generate_salary_slips(data, period):
         app.logger.info('Making dir successful')
         css = ['static/css/bootstrap.css']
         for slip,disb,employee in data:
-            slip_html = render_template('employeereport.html', slip=slip, disb =disb, employee=employee)
+            slip_html = render_template('employeereport.html', slip=slip, disb =disb, employee=employee, year=period.year, month = period.month, int=int)
             pdfkit.from_string(slip_html, dirpath+str(employee.empid)+'.pdf', css = css)
             app.logger.info('Made pdf for employee %r' %employee.empid)
             subject = "Pay Slip for "+str(period.month)+'/' + str(period.year)

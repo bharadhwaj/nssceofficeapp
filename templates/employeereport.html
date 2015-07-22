@@ -5,222 +5,225 @@
 
   <title> Salary slip</title>
 
-  
+  <link rel="stylesheet" type="text/css" href="../static/css/bootstrap.css">
   
 </head>
 
-<body style="padding-top: 70px;">
- <div class="container">
+<body style="padding-top: 70px;font-family:monospace;">
+ <!-- <div class="container"> -->
 
   <div class="row">
-    <div class="col-md-12">
-      
-        <div class="jumbotron">
-          <h2> <small> NAME: </small> {{employee.name}} </h2>
-          <h4> <small> Designation: </small> {{employee.designation}}</h4>
-          <h4> <small> Department: </small> {{employee.department}} </h4>
-          <h4> <small> Scheme: </small> {{employee.scheme}} </h4>
-          <h4> <small> Bank: </small> {{employee.bank_name}} </h4>
-          <h4> <small> Account Number: </small> {{employee.accno}} </h4>
+    <div class="col-xs-6 col-xs-offset-3">
+  
+      <h4 class="text-center">NSS COLLEGE OF ENGINEERING</h4>
+      <h4 class="text-center">PALAKKAD</h4>
+      <h4 class="text-center">SALARY SLIP</h4>
+      <h4>{{employee.name}}</h4>
+      <h4>Salary for the month {{month}}/{{year}}</h4>
+      <hr/>
+      <div class="row">
+        <div class="col-xs-6">
+          <table class="table">
+            <tr>
+              <td>BASIC</td>
+              <td class="text-right">{{slip.basic_pay}}</td>
+            </tr>
+            <tr>
+              <td>AGP</td>
+              <td class="text-right">{{slip.agp}}</td>
+            </tr>
+            <tr>
+              <td>DA</td>
+              <td class="text-right">{{slip.da}}</td>
+            </tr>
+            <tr>
+              <td>HRA</td>
+              <td class="text-right">{{slip.hra}}</td>
+            </tr>
+            <tr>
+              <td>OTHER</td>
+              <td class="text-right">{{slip.other}}</td>
+            </tr>
+
+            <tr >
+              <td><strong>GROSS</strong></td>
+              <td class="text-right"><strong>{{slip.other + slip.hra + slip.da + slip.agp + slip.basic_pay}}</strong></td>
+            </tr>
+          </table>
+          </div>
+          <div class="col-xs-6">
+          <table class="table">
+            {% if slip.pf != 0 %}
+            <tr>
+              <td>PF</td>
+              <td class="text-right">{{slip.pf}}</td>
+            </tr>
+            {% endif %}
+            {% if slip.pf_loan != 0 %}
+            <tr>
+              <td>PF LOAN</td>
+              <td class="text-right">{{slip.pf_loan}}</td>
+            </tr>
+            {% endif %}
+            {% if slip.sli != 0 %}
+            <tr>
+              <td>SLI</td>
+              <td class="text-right">{{slip.sli}}</td>
+            </tr>
+            {% endif %}
+            {% if slip.fbs != 0 %}
+            <tr>
+              <td>FBS</td>
+              <td class="text-right">{{slip.fbs}}</td>
+            </tr>
+            {% endif %}
+            {% if slip.gis != 0 %}
+            <tr>
+              <td>GIS</td>
+              <td class="text-right">{{slip.gis}}</td>
+            </tr>
+            {% endif %}
+            {% if slip.income_tax != 0 %}
+            <tr>
+              <td>INCOME TAX</td>
+              <td class="text-right">{{slip.income_tax}}</td>
+            </tr>
+            {% endif %}
+            {% if slip.gpis != 0 %}
+            <tr>
+              <td>GPIS</td>
+              <td class="text-right">{{slip.gpis}}</td>
+            </tr>
+            {% endif %}
+            {% if slip.other2 != 0 %}
+            <tr>
+              <td>OTHER2</td>
+              <td class="text-right">{{slip.other2}}</td>
+            </tr>
+            {% endif %}
+            <!-- <tr><td colspan="2"><hr/></td></tr> -->
+
+            <!-- DISBURSEMENTS: -->
+            {% if disb.premiums_cut != 0 %}
+            <tr>
+              <td>PREMIUMS</td>
+              <td class="text-right">{{disb.premiums_cut}}</td>
+            </tr>
+            {% endif %}
+             {% if disb.telephone != 0 %}
+            <tr>
+              <td>TELEPHONE</td>
+              <td class="text-right">{{disb.telephone}}</td>
+            </tr>
+            {% endif %}
+            {% if disb.tenancy_rent != 0 %}
+            <tr>
+              <td>TENANCY RENT</td>
+              <td class="text-right">{{disb.tenancy_rent}}</td>
+            </tr>
+            {% endif %}
+            {% if disb.cs_loan != 0 %}
+            <tr>
+              <td>CS LOAN</td>
+              <td class="text-right">{{disb.cs_loan}}</td>
+            </tr>
+            {% endif %}
+            {% if disb.cs_chitty != 0 %}
+            <tr>
+              <td>CS CHITTY</td>
+              <td class="text-right">{{disb.cs_chitty}}</td>
+            </tr>
+            {% endif %}
+            {% if disb.stamp != 0 %}
+            <tr>
+              <td>STAMP</td>
+              <td class="text-right">{{disb.stamp}}</td>
+            </tr>
+            {% endif %}
+            {% if disb.send_off != 0 %}
+            <tr>
+              <td>SENDOFF</td>
+              <td class="text-right">{{disb.send_off}}</td>
+            </tr>
+            {% endif %}
+            {% if disb.welfare_fund != 0 %}
+            <tr>
+              <td>WELFARE FUND</td>
+              <td class="text-right">{{disb.welfare_fund}}</td>
+            </tr>
+            {% endif %}
+            {% if disb.dte_jp != 0 %}
+            <tr>
+              <td>DTE</td>
+              <td class="text-right">{{disb.dte_jp}}</td>
+            </tr>
+            {% endif %}
+            {% if disb.jn != 0 %}
+            <tr>
+              <td>JN</td>
+              <td class="text-right">{{disb.jn}}</td>
+            </tr>
+            {% endif %}
+            {% if disb.indian_bank != 0 %}
+            <tr>
+              <td>INDIAN BANK</td>
+              <td class="text-right">{{disb.indian_bank}}</td>
+            </tr>
+            {% endif %}
+            {% if disb.pdc_bank != 0 %}
+            <tr>
+              <td>PDC BANK</td>
+              <td class="text-right">{{disb.pdc_bank}}</td>
+            </tr>
+            {% endif %}
+            {% if disb.ksfe != 0 %}
+            <tr>
+              <td>KSFE</td>
+              <td class="text-right">{{disb.ksfe}}</td>
+            </tr>
+            {% endif %}
+            {% if disb.ksc_bank != 0 %}
+            <tr>
+              <td>KSC BANK</td>
+              <td class="text-right">{{disb.ksc_bank}}</td>
+            </tr>
+            {% endif %}
+            {% if disb.other1 != 0 %}
+            <tr>
+              <td>OTHER</td>
+              <td class="text-right">{{disb.other1}}</td>
+            </tr>
+            {% endif %}
+            {% if disb.other2 != 0 %}
+            <tr>
+              <td>OTHER</td>
+              <td class="text-right">{{disb.other2}}</td>
+            </tr>
+            {% endif %}
+            {% if disb.other3 != 0 %}
+            <tr>
+              <td>OTHER</td>
+              <td class="text-right">{{disb.other3}}</td>
+            </tr>
+            {% endif %}
+            <!-- <tr><td colspan="2"><hr/></td></tr> -->
+            <tr>
+              <td>Total Deductions</td>
+              <td class="text-right">{{int(slip.other + slip.hra + slip.da + slip.agp + slip.basic_pay - disb.gross_salary)}}</td>
+            </tr>
+            <!-- <tr><td colspan="2"><hr/></td></tr> -->
+            <tr>
+              <td><strong>NET CASH</strong></td>
+              <td class="text-right"><strong>{{disb.gross_salary}}</strong></td>
+            </tr>
+            </table>
+          </div>
 
         </div>
-        
-        <table class="table table-striped ">
-        <thead>
-          <td>#</td>
-          <td>Details</td>
-          <td>Amount</td>
-        </thead>
-        <tr>
-        <th colspan="3"><center>Personal Details</center></th> 
-        </tr>
-        <tr>
-          <td>1</td>
-          <td>Basic Pay</td>
-          <td>{{employee.basic_pay}}</td>
-        </tr>
-        <tr>
-          <td>2</td>
-          <td>AGP</td>
-          <td>{{slip.agp}}</td>
-        </tr>
-        <tr>
-          <td>3</td>
-          <td>DA</td>
-          <td>{{slip.da}}</td>
-        </tr>
-        <tr>
-          <td>4</td>
-          <td>HRA</td>
-          <td>{{slip.hra}}</td>
-        </tr>
-        <tr>
-          <td>5</td>  
-          <td>Others</td>
-          <td>{{slip.other}}</td>
-        </tr>
-         <tr>
-        <th colspan="3"><center>Leave Details</center></th> 
-        </tr>
-        <tr>
-          <td>6</td>
-          <td>Half Pay</td>
-          <td>{{slip.halfpay}}</td>
-        </tr>
-        <tr>
-          <td>7</td>
-          <td>LWA</td>
-          <td>{{slip.lwa}}</td>
-        </tr>
-        <tr>
-        <th colspan="3"><center>Spark Details</center></th> 
-        </tr>
-        <tr>
-          <td>8</td>
-          <td>PF</td>
-          <td>{{slip.pf}}</td>
-        </tr>
-        <tr>
-          <td>9</td>
-          <td>PF-Loan</td>
-          <td>{{slip.pf_loan}}</td>
-        </tr>
-        <tr>
-          <td>10</td>
-          <td>SLI</td>
-          <td>{{slip.sli}}</td>
-        </tr>
-        <tr>
-          <td>11</td>
-          <td>FBS</td>
-          <td>{{slip.fbs}}</td>
-        </tr>
-        <tr>
-          <td>12</td>
-          <td>GIS</td>
-          <td>{{slip.gis}}</td>
-        </tr>
-        <tr>
-          <td>12</td>
-          <td>GIS</td>
-          <td>{{slip.gis}}</td>
-        </tr>
-        <tr>
-          <td>13</td>
-          <td>IT</td>
-          <td>{{slip.income_tax}}</td>
-        </tr>
-        <tr>
-          <td>14</td>
-          <td>GPIS</td>
-          <td>{{slip.gpis}}</td>
-        </tr>
-        <tr>
-        <th colspan="2"><center>Net Salary</center></th> 
-        <th>{{disb.net_salary}}</th>
-        </tr>
-        
-        <tr>
-        <th colspan="3"><center>Disbursals</center></th> 
-        </tr>
-
-        <tr>
-          <td>1</td>
-          <td>Premiums Cut</td>
-          <td>{{disb.premiums_cut}}</td>
-        </tr>
-        <tr>
-          <td>2</td>
-          <td>Telephone</td>
-          <td>{{disb.telephone}}</td>
-        </tr>
-        <tr>
-          <td>3</td>
-          <td>Tenancy Rent</td>
-          <td>{{disb.tenancy_rent}}</td>
-        </tr>
-        <tr>
-          <td>5</td>
-          <td>CS Loan</td>
-          <td>{{disb.cs_loan}}</td>
-        </tr>
-        <tr>
-          <td>5</td>
-          <td>CS Chitty</td>
-          <td>{{disb.cs_chitty}}</td>
-        </tr>
-        <tr>
-          <td>6</td>
-          <td>Stamp</td>
-          <td>{{disb.stamp}}</td>
-        </tr>
-        <tr>
-          <td>7</td>
-          <td>Send off</td>
-          <td>{{disb.send_off}}</td>
-        </tr>
-        <tr>
-          <td>8</td>
-          <td>Welfare Fund</td>
-          <td>{{disb.welfare_fund}}</td>
-        </tr>
-        <tr>
-          <td>9</td>
-          <td>DTE JP</td>
-          <td>{{disb.dte_jp}}</td>
-        </tr>
-        <tr>
-          <td>10</td>
-          <td>JN</td>
-          <td>{{disb.jn}}</td>
-        </tr>
-        <tr>
-          <td>11</td>
-          <td>Indian Bank</td>
-          <td>{{disb.indian_bank}}</td>
-        </tr>
-        <tr>
-          <td>12</td>
-          <td>PDC Bank</td>
-          <td>{{disb.pdc_bank}}</td>
-        </tr>
-        <tr>
-          <td>13</td>
-          <td>KSFE</td>
-          <td>{{disb.ksfe}}</td>
-        </tr>
-        <tr>
-          <td>14</td>
-          <td>KSC Bank</td>
-          <td>{{disb.ksc_bank}}</td>
-        </tr>
-        <tr>
-          <td>15</td>
-          <td>Other1</td>
-          <td>{{disb.other1}}</td>
-        </tr>
-        <tr>
-          <td>16</td>
-          <td>Other2</td>
-          <td>{{disb.other2}}</td>
-        </tr>
-        <tr>
-          <td>17</td>
-          <td>Other3</td>
-          <td>{{disb.other3}}</td>
-        </tr>
-        <tr>
-        <th colspan="2"><center>Net Payable</center></th> 
-        <th>{{disb.gross_salary}}</th>
-        </tr>
-
-
-        </table>
-        
-
+      </div>
 
     </div>
-  </div>
+  <!-- </div> -->
 </div>
 </body>
 </html>
