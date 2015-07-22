@@ -1,41 +1,41 @@
-Personal / salary slip
-Bankwise
-Scheme AICTE(UGC)/State/QIP
-Department wise
+(* -> Completed)
 
-Basic Science and Humanities
+*Personal / salary slip
+*Bankwise
+*Scheme AICTE(UGC)/State/QIP
 
-No Ps.
+*Basic Science and Humanities
+
+*No Ps.
 >=50 ->1
 
 
-Banks:
-Punjab National Bank
-Union Bank of India
-Other
+*Banks:
+-Punjab National Bank
+-Union Bank of India
+-Other
 
-Designations: (Not in slip)
+*Designations: (Not in slip)
 Principal
 -Professor
 -Associate Professor
 -Assistant Professor
-
 -Non teaching
 -Office	
 
 
-Gross Salary in disbursal -> Net Payable
+*Gross Salary in disbursal -> Net Payable
 
 
-Round at each stage
+*Round at each stage
 
-List:
+*List:
 
-LIC cutting list
-All cuttings
+-LIC cutting list
+-All cuttings
 
 
 Retain values from previous month in spark
 
 
-Avoid 0 fields
+*Avoid 0 fields

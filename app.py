@@ -253,6 +253,18 @@ def reportentry():
     if request.method == 'POST':
         empid = request.form['empid']
         employee = Employee.query.get(int(empid))
+        
+        # last_month = period.month - 1
+        # last_year = period.year
+        # if last_month == 0:
+        #     last_month = 12
+        #     last_year -= 1
+        # old_period = SalaryPeriod.query.filter_by(month = last_month, year = last_year).first()
+        # if old_period:
+        #     app.logger.info('Found old period: %r '%old_period.month)
+        #     slip = SalarySlip.query.filter_by(employee_id = int(empid), period_id = old_period.id).first()
+        
+
         basic_pay = float(request.form['basic_pay'])
         agp = float(request.form['agp'])
         da = float(request.form['da'])
@@ -268,7 +280,7 @@ def reportentry():
         it = float(request.form['it'])
         gpis = float(request.form['gpis'])
         other2 = float(request.form['other2'])
-
+        
         if request.form['hasslip'] == 'True':
             slip = SalarySlip.query.filter_by(employee_id = int(empid), period_id = period.id).first()
             app.logger.info('Found existing slip: %r'%slip)
@@ -606,16 +618,6 @@ def generate(year,month):
             
             generate_bank_slips(data, period, bank_name, bank_total)
 
-            # employee = Employee.query.all()
-            # app.logger.info('Queried all employees')
-            # for emp in employee:
-            #     send_email("Pay Slip",
-            #         'TIM',
-            #         [emp.email],
-            #         'Check in attachments',
-            #         render_template('employeereport.html',employee = emp, data = dataglobal)
-            #         )
-            #     app.logger.info('Mail sent')
         elif name == 'disbursement':
             disb_name = request.form['disb_name']
             period = SalaryPeriod.query.filter_by(year = year, month=month).first()
@@ -677,7 +679,7 @@ def generate_salary_slips(data, period):
 @async
 def generate_bank_slips(data, period, bank_name, bank_total):
     with app.app_context():        
-        dirpath = 'slips/%d/%s/' %(period.year,bank_name)
+        dirpath = 'slips/%d/%s/%s/' %(period.year,'Banks',bank_name)
         if not os.path.isdir(dirpath):
             try:
                 os.makedirs(dirpath)
@@ -698,7 +700,7 @@ def generate_bank_slips(data, period, bank_name, bank_total):
 @async
 def generate_disb_slips(data, period, disb_name, disb_total, disb):
     with app.app_context():        
-        dirpath = 'slips/%d/%s/' %(period.year,disb.get(disb_name))
+        dirpath = 'slips/%d/%s/%s/' %(period.year,'Disbursements',disb.get(disb_name))
         if not os.path.isdir(dirpath):
             try:
                 os.makedirs(dirpath)
