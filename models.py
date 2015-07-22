@@ -115,28 +115,28 @@ class SalarySlip(db.Model):
     period_id = db.Column(db.Integer, db.ForeignKey('period.id'))
     employee_id = db.Column(db.Integer, db.ForeignKey('employee.id'))
 
-    basic_pay = db.Column(db.Float)
-    lwa = db.Column(db.Integer)
-    halfpay = db.Column(db.Integer)
-    agp = db.Column(db.Float)
-    da = db.Column(db.Float)
-    hra = db.Column(db.Float)
-    other = db.Column(db.Float)
-    gross = db.Column(db.Float)
+    basic_pay = db.Column(db.Float, default = 0)
+    lwa = db.Column(db.Integer, default = 0)
+    halfpay = db.Column(db.Integer, default = 0)
+    agp = db.Column(db.Float, default = 0)
+    da = db.Column(db.Float, default = 0)
+    hra = db.Column(db.Float, default = 0)
+    other = db.Column(db.Float, default = 0)
+    gross = db.Column(db.Float, default = 0)
 
     #cuttings:
 
-    pf = db.Column(db.Float)
-    pf_loan = db.Column(db.Float)
-    sli = db.Column(db.Float)
-    fbs = db.Column(db.Float)
-    gis = db.Column(db.Float)
-    income_tax = db.Column(db.Float)
-    gpis = db.Column(db.Float)
-    other2 = db.Column(db.Float)
-    total_deductions = db.Column(db.Float)
+    pf = db.Column(db.Float, default = 0)
+    pf_loan = db.Column(db.Float, default = 0)
+    sli = db.Column(db.Float, default = 0)
+    fbs = db.Column(db.Float, default = 0)
+    gis = db.Column(db.Float, default = 0)
+    income_tax = db.Column(db.Float, default = 0)
+    gpis = db.Column(db.Float, default = 0)
+    other2 = db.Column(db.Float, default = 0)
+    total_deductions = db.Column(db.Float, default = 0)
 
-    net_salary = db.Column(db.Float)
+    net_salary = db.Column(db.Float, default = 0)
 
     def __init__(self, period, emp, basic_pay, agp, da, hra, other,lwa, halfpay, pf, pf_loan, sli, fbs,
         gis, income_tax, gpis, other2):

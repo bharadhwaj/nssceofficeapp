@@ -318,13 +318,13 @@ def reportform(empid):
                 app.logger.info('gotslip %r', slip.id)
             hraval = period.hra
             if employee.scheme == 'State':
-                daval = employee.basic_pay *period.da_state / 100.
+                daval = round(employee.basic_pay *period.da_state / 100.)
             elif  employee.scheme == 'AICTE':
-                daval = employee.basic_pay *period.da_aicte / 100.
+                daval = round(employee.basic_pay *period.da_aicte / 100.)
             elif employee.scheme == 'QIP':
-                daval = employee.basic_pay *period.da_qip / 100.
+                daval = round(employee.basic_pay *period.da_qip / 100.)
             elif employee.scheme == 'UGC':
-                daval = employee.basic_pay *period.da_ugc / 100.
+                daval = round(employee.basic_pay *period.da_ugc / 100.)
 
 
             return render_template('reportform.html', employee = employee, hraval=hraval, daval=daval, slip=slip, hasslip= hasslip)
@@ -351,22 +351,22 @@ def verifyentries():
                 agpperday = float(slip.agp) / daysinmonth[period.month - 1]
                 hraperday = float(slip.hra) / daysinmonth[period.month - 1]
               
-                slip.basic_pay -= slip.lwa * basicperday
-                slip.agp -= slip.lwa * agpperday
-                slip.da -= slip.lwa * daperday
-                slip.hra -= slip.lwa * hraperday
+                slip.basic_pay -= round(slip.lwa * basicperday)
+                slip.agp -= round(slip.lwa * agpperday)
+                slip.da -= round(slip.lwa * daperday)
+                slip.hra -= round(slip.lwa * hraperday)
 
                 #Halfpay
 
-                slip.basic_pay -= slip.halfpay * basicperday / 2
+                slip.basic_pay -= round(slip.halfpay * basicperday / 2)
                 if original_basic_pay > 18739:
-                    slip.agp -= slip.halfpay * agpperday / 2
-                    slip.da -= slip.halfpay * daperday / 2
-                    slip.hra -= slip.halfpay * hraperday / 2
+                    slip.agp -= round(slip.halfpay * agpperday / 2)
+                    slip.da -= round(slip.halfpay * daperday / 2)
+                    slip.hra -= round(slip.halfpay * hraperday / 2)
 
-                slip.gross = slip.basic_pay + slip.agp + slip.da + slip.hra + slip.other
-                slip.total_deductions = slip.pf + slip.pf_loan + slip.sli + slip.fbs + slip.gis + slip.income_tax + slip.gpis + slip.other2
-                slip.net_salary = slip.gross - slip.total_deductions
+                slip.gross =round( slip.basic_pay + slip.agp + slip.da + slip.hra + slip.other)
+                slip.total_deductions = round(slip.pf + slip.pf_loan + slip.sli + slip.fbs + slip.gis + slip.income_tax + slip.gpis + slip.other2)
+                slip.net_salary = round(slip.gross - slip.total_deductions)
 
                 db.session.add(slip)
             period.spark_completed = True;
@@ -489,7 +489,7 @@ def verifydisbursals():
         verified = request.form['verified']
         if verified:
             for slip in slips:
-                slip.gross_salary = slip.net_salary - (slip.premiums_cut \
+                slip.gross_salary = round(slip.net_salary - (slip.premiums_cut \
                                                     + slip.telephone \
                                                     + slip.tenancy_rent \
                                                     + slip.cs_loan \
@@ -505,7 +505,7 @@ def verifydisbursals():
                                                     + slip.ksc_bank \
                                                     + slip.other1
                                                     + slip.other2 \
-                                                    + slip.other3)
+                                                    + slip.other3))
 
                 db.session.add(slip)
 
@@ -666,7 +666,7 @@ def generate_salary_slips(data, period):
         app.logger.info('Making dir successful')
         css = ['static/css/bootstrap.css']
         for slip,disb,employee in data:
-            slip_html = render_template('employeereport.html', slip=slip, disb =disb, employee=employee)
+            slip_html = render_template('employeereport.html', slip=slip, disb =disb, employee=employee, year=period.year, month = period.month, int=int)
             pdfkit.from_string(slip_html, dirpath+str(employee.empid)+'.pdf', css = css)
             app.logger.info('Made pdf for employee %r' %employee.empid)
             subject = "Pay Slip for "+str(period.month)+'/' + str(period.year)
@@ -719,6 +719,7 @@ def generate_disb_slips(data, period, disb_name, disb_total, disb):
 @app.route('/test/<template>')
 def test(template):
     return render_template(template+'.html')
+
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0",port=5000)
